@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizLive - Guía Completa</title>
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/poppins@5.0.8/index.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a0533 0%, #2d1b69 50%, #11001c 100%);
+            min-height: 100vh;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            color: #ffd93d;
+            margin: 30px 0 15px;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #6bcb77;
+            margin: 20px 0 10px;
+        }
+
+        p, li {
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6bcb77, #4d96ff);
+            color: white;
+            font-weight: 800;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: rgba(255, 217, 61, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #ffd93d;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: #6bcb77;
+            margin: 10px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .qr-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+
+        .qr-placeholder {
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6bcb77, #4d96ff);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            color: #1a0533;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .note {
+            background: rgba(77, 150, 255, 0.15);
+            border-left: 4px solid #4d96ff;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+        }
+
+        .warning {
+            background: rgba(255, 107, 107, 0.15);
+            border-left: 4px solid #ff6b6b;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+        }
+
+        .success {
+            background: rgba(107, 203, 119, 0.15);
+            border-left: 4px solid #6bcb77;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        th {
+            background: rgba(255,255,255,0.1);
+            color: #ffd93d;
+            font-weight: 700;
+        }
+
+        td {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .emoji {
+            font-size: 1.3em;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .container { padding: 20px 15px; }
+            .step-card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 QuizLive - Guía Completa de Uso</h1>
+        <p style="text-align:center; color:rgba(255,255,255,0.6); margin-bottom:30px;">
+            Todo lo que necesitas saber para usar el juego con tus alumnos
+        </p>
+
+        <!-- SECCIÓN 1: CÓMO SE UNE UN PARTICIPANTE -->
+        <h2><span class="emoji">📱</span> ¿Cómo se une un participante al juego?</h2>
+        
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                El alumno abre la página web
+            </div>
+            <p>El alumno debe abrir la misma página web que tú en su celular o computadora. Puede hacerlo de tres formas:</p>
+            <ul>
+                <li><strong>Opción A:</strong> Escaneando el código QR que generas (ver sección más abajo)</li>
+                <li><strong>Opción B:</strong> Escribiendo la URL directamente en el navegador</li>
+                <li><strong>Opción C:</strong> Haciendo clic en un enlace que les compartas</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Selecciona "Unirse como Alumno"
+            </div>
+            <p>En la pantalla principal, el alumno verá dos botones. Debe presionar el botón <span class="highlight">📱 Unirse como Alumno</span>.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Ingresa el código de sala
+            </div>
+            <p>Tú (el profesor) verás un <span class="highlight">código de 5 caracteres</span> en tu pantalla (ejemplo: <code>A3K7M</code>). El alumno debe escribir ese código exactamente igual en el campo "Código de sala".</p>
+            <div class="note">
+                <strong>💡 Nota:</strong> El código distingue entre mayúsculas y minúsculas. Asegúrate de que los alumnos lo escriban correctamente.
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                Escribe su nombre
+            </div>
+            <p>El alumno escribe su nombre en el campo correspondiente y presiona <span class="highlight">🎮 Unirse al Juego</span>.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">5</span>
+                Espera a que inicie el juego
+            </div>
+            <p>Una vez conectado, el alumno verá una pantalla de espera con su nombre. Cuando tú presiones <span class="highlight">▶️ Comenzar Juego</span>, todos los alumnos conectados recibirán la primera pregunta automáticamente.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">6</span>
+                Responde las preguntas
+            </div>
+            <p>Cada pregunta aparece con 4 opciones de colores diferentes (rojo, azul, amarillo, verde). El alumno tiene <span class="highlight">20 segundos</span> para seleccionar una respuesta tocando el botón correspondiente.</p>
+            <ul>
+                <li>Mientras más rápido responda correctamente, más puntos gana</li>
+                <li>Solo puede seleccionar una respuesta por pregunta</li>
+                <li>Si no responde a tiempo, no obtiene puntos</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 2: EXPLICACIONES DE RESPUESTAS -->
+        <h2><span class="emoji">💡</span> Explicaciones de Respuestas Correctas e Incorrectas</h2>
+
+        <div class="step-card">
+            <h3>¿Qué son las explicaciones?</h3>
+            <p>Las explicaciones son textos que aparecen después de cada pregunta para reforzar el aprendizaje:</p>
+            <ul>
+                <li><strong>Explicación correcta:</strong> Aparece cuando el alumno acierta. Refuerza por qué esa es la respuesta correcta.</li>
+                <li><strong>Explicación incorrecta:</strong> Aparece cuando el alumno falla. Explica cuál era la respuesta correcta y por qué.</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h3>¿Cómo agregar explicaciones a tus preguntas?</h3>
+            <p>Para agregar explicaciones, debes crear preguntas personalizadas siguiendo estos pasos:</p>
+            
+            <ol>
+                <li>Ve a la pantalla principal y selecciona <span class="highlight">🖥️ Crear Partida (Profesor)</span></li>
+                <li>Selecciona la pestaña <span class="highlight">Crear Preguntas</span></li>
+                <li>Haz clic en <span class="highlight">+ Agregar Pregunta</span></li>
+                <li>Completa los campos:
+                    <table>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>Pregunta</td>
+                            <td>El texto de la pregunta que verán los alumnos</td>
+                        </tr>
+                        <tr>
+                            <td>Respuesta A (rojo)</td>
+                            <td>Primera opción de respuesta</td>
+                        </tr>
+                        <tr>
+                            <td>Respuesta B (azul)</td>
+                            <td>Segunda opción de respuesta</td>
+                        </tr>
+                        <tr>
+                            <td>Respuesta C (amarillo)</td>
+                            <td>Tercera opción de respuesta</td>
+                        </tr>
+                        <tr>
+                            <td>Respuesta D (verde)</td>
+                            <td>Cuarta opción de respuesta</td>
+                        </tr>
+                        <tr>
+                            <td>Respuesta correcta</td>
+                            <td>Selecciona cuál de las 4 es la correcta (A, B, C o D)</td>
+                        </tr>
+                        <tr>
+                            <td>Explicación si acierta</td>
+                            <td>Texto que aparece cuando el alumno responde correctamente</td>
+                        </tr>
+                        <tr>
+                            <td>Explicación si falla</td>
+                            <td>Texto que aparece cuando el alumno responde incorrectamente</td>
+                        </tr>
+                    </table>
+                </li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <h3>Ejemplo de pregunta con explicaciones:</h3>
+            <div class="code-block">
+<strong>Pregunta:</strong> ¿Cuál es el planeta más grande del sistema solar?
+
+<strong>Respuesta A (rojo):</strong> Júpiter ✅ (CORRECTA)
+<strong>Respuesta B (azul):</strong> Saturno
+<strong>Respuesta C (amarillo):</strong> Neptuno
+<strong>Respuesta D (verde):</strong> Urano
+
+<strong>Explicación si acierta:</strong>
+"¡Correcto! 🎉 Júpiter es el planeta más grande del sistema solar. 
+Tiene un diámetro de aproximadamente 139,820 km, que es más de 11 veces 
+el diámetro de la Tierra. ¡Es tan grande que cabrían más de 1,300 Tierras dentro!"
+
+<strong>Explicación si falla:</strong>
+"La respuesta correcta es Júpiter. Aunque Saturno es el segundo planeta 
+más grande, Júpiter lo supera significativamente. Júpiter es un gigante 
+gaseoso compuesto principalmente de hidrógeno y helio."
+            </div>
+        </div>
+
+        <div class="success">
+            <strong>✅ Beneficios de usar explicaciones:</strong>
+            <ul style="margin-top:10px;">
+                <li>Los alumnos aprenden incluso cuando se equivocan</li>
+                <li>Se refuerzan los conceptos correctos</li>
+                <li>Se proporciona contexto adicional valioso</li>
+                <li>Mejora la retención del conocimiento</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 3: PASO A PASO PARA PONER EN FUNCIONAMIENTO -->
+        <h2><span class="emoji">🚀</span> Paso a Paso: Cómo Poner en Funcionamiento el Juego</h2>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Preparación previa (antes de la clase)
+            </div>
+            <ol>
+                <li><strong>Guarda el archivo HTML</strong> en tu computadora con el nombre <code>quizlive.html</code></li>
+                <li><strong>Prueba el juego</strong> abriendo el archivo en tu navegador (Chrome, Firefox, Edge)</li>
+                <li><strong>Crea tus preguntas</strong> usando la opción "Crear Preguntas" o selecciona un tema prediseñado</li>
+                <li><strong>Agrega las explicaciones</strong> para cada pregunta (correcta e incorrecta)</li>
+                <li><strong>Genera el código QR</strong> (ver sección siguiente) para compartir con los alumnos</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Durante la clase - Configuración
+            </div>
+            <ol>
+                <li><strong>Abre el archivo</strong> <code>quizlive.html</code> en tu navegador</li>
+                <li><strong>Proyecta tu pantalla</strong> para que todos los alumnos vean el código de sala</li>
+                <li><strong>Presiona</strong> <span class="highlight">🖥️ Crear Partida (Profesor)</span></li>
+                <li><strong>Selecciona</strong> un tema prediseñado O crea tus propias preguntas</li>
+                <li><strong>Presiona</strong> <span class="highlight">🚀 Iniciar Partida</span></li>
+                <li><strong>Anota el código de sala</strong> que aparece en pantalla (ej: <code>K7M3P</code>)</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Durante la clase - Conexión de alumnos
+            </div>
+            <ol>
+                <li><strong>Muestra el código QR</strong> o comparte la URL con los alumnos</li>
+                <li><strong>Diles el código de sala</strong> en voz alta y escríbelo en la pizarra</li>
+                <li><strong>Espera</strong> a que los alumnos se conecten (verás sus nombres aparecer en tu pantalla)</li>
+                <li><strong>Verifica</strong> que todos estén conectados antes de comenzar</li>
+            </ol>
+            <div class="note">
+                <strong>💡 Consejo:</strong> Si algún alumno tiene problemas para conectarse, verifica que:
+                <ul style="margin-top:8px;">
+                    <li>Esté usando el mismo archivo/URL que tú</li>
+                    <li>El código de sala esté escrito correctamente</li>
+                    <li>Tenga conexión a internet</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                Durante la clase - Jugando
+            </div>
+            <ol>
+                <li><strong>Presiona</strong> <span class="highlight">▶️ Comenzar Juego</span> cuando todos estén listos</li>
+                <li><strong>Lee la pregunta</strong> en voz alta para todos los alumnos</li>
+                <li><strong>Espera</strong> los 20 segundos mientras los alumnos responden</li>
+                <li><strong>Revisa los resultados</strong> que aparecen automáticamente</li>
+                <li><strong>Lee las explicaciones</strong> para reforzar el aprendizaje</li>
+                <li><strong>Presiona</strong> <span class="highlight">Siguiente Pregunta →</span> para continuar</li>
+                <li><strong>Repite</strong> hasta completar todas las preguntas</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-number">5</span>
+                Final del juego
+            </div>
+            <ol>
+                <li>Al terminar todas las preguntas, se muestra el <strong>podio final</strong></li>
+                <li>Puedes <strong>felicitar a los ganadores</strong></li>
+                <li>Presiona <span class="highlight">🔄 Jugar de Nuevo</span> para otra ronda</li>
+                <li>O presiona <span class="highlight">← Menú Principal</span> para salir</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Importante sobre la conexión:</strong>
+            <p style="margin-top:8px;">Este juego funciona mediante <strong>BroadcastChannel API</strong> y <strong>localStorage</strong>, lo que significa que:</p>
+            <ul style="margin-top:8px;">
+                <li><strong>Funciona mejor</strong> cuando todos usan el MISMO navegador en la MISMA computadora (modo demostración)</li>
+                <li>Para uso real con múltiples dispositivos, necesitarías un <strong>servidor backend</strong> (Node.js, Firebase, etc.)</li>
+                <li>La versión actual es ideal para <strong>demostraciones y pruebas</strong></li>
+                <li>Para producción real, considera usar plataformas como Kahoot, Quizizz o implementar un servidor WebSocket</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 4: CÓDIGO QR -->
+        <h2><span class="emoji">📷</span> Código QR para los Alumnos</h2>
+
+        <div class="qr-section">
+            <h3 style="color:#ffd93d; margin-bottom:15px;">Escanea este código para unirte al juego</h3>
+            <p style="color:rgba(255,255,255,0.7); margin-bottom:20px;">
+                Los alumnos pueden escanear este código QR con la cámara de su celular<br>
+                para abrir directamente la página del juego
+            </p>
+            
+            <div class="qr-placeholder" id="qr-container">
+                <!-- QR code will be generated here -->
+            </div>
+
+            <div class="note" style="text-align:left; margin-top:20px;">
+                <strong>📌 Instrucciones para generar el QR:</strong>
+                <ol style="margin-top:10px;">
+                    <li>Sube el archivo <code>quizlive.html</code> a un servidor web o hosting gratuito (GitHub Pages, Netlify, Vercel, etc.)</li>
+                    <li>Copia la URL completa donde está alojado el archivo</li>
+                    <li>Usa cualquier generador de QR online (como qr-code-generator.com) para crear el código</li>
+                    <li>Imprime el QR y muéstralo a los alumnos, o proyéctalo en la pantalla</li>
+                </ol>
+            </div>
+
+            <button class="btn btn-primary" onclick="generateQR()">🔄 Generar Código QR</button>
+            <button class="btn btn-secondary" onclick="downloadQR()">⬇️ Descargar QR</button>
+        </div>
+
+        <div class="step-card">
+            <h3>Opciones de alojamiento gratuitas:</h3>
+            <table>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Ventajas</th>
+                    <th>URL ejemplo</th>
+                </tr>
+                <tr>
+                    <td>GitHub Pages</td>
+                    <td>Gratis, fácil de usar</td>
+                    <td>https://tuusuario.github.io/quizlive</td>
+                </tr>
+                <tr>
+                    <td>Netlify</td>
+                    <td>Deploy automático, muy rápido</td>
+                    <td>https://quizlive-tunombre.netlify.app</td>
+                </tr>
+                <tr>
+                    <td>Vercel</td>
+                    <td>Rápido, buena documentación</td>
+                    <td>https://quizlive-tunombre.vercel.app</td>
+                </tr>
+                <tr>
+                    <td>Google Drive</td>
+                    <td>Familiar, pero limitado</td>
+                    <td>No recomendado para HTML interactivo</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- SECCIÓN 5: TROUBLESHOOTING -->
+        <h2><span class="emoji">🔧</span> Solución de Problemas Comunes</h2>
+
+        <div class="step-card">
+            <h3>Problema: Los alumnos no pueden conectarse</h3>
+            <ul>
+                <li><strong>Causa:</strong> Están usando diferentes navegadores o dispositivos</li>
+                <li><strong>Solución:</strong> Esta versión usa BroadcastChannel/localStorage que solo funciona entre pestañas del mismo navegador. Para uso real multi-dispositivo, necesitas un servidor backend.</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h3>Problema: El código QR no funciona</h3>
+            <ul>
+                <li><strong>Causa:</strong> La URL en el QR es incorrecta o el archivo no está publicado</li>
+                <li><strong>Solución:</strong> Verifica que la URL sea accesible desde cualquier dispositivo. Prábala tú primero desde tu celular.</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h3>Problema: Las explicaciones no aparecen</h3>
+            <ul>
+                <li><strong>Causa:</strong> No agregaste las explicaciones al crear la pregunta</li>
+                <li><strong>Solución:</strong> Asegúrate de completar ambos campos de explicación (correcta e incorrecta) al crear cada pregunta personalizada.</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h3>Problema: El temporizador no funciona correctamente</h3>
+            <ul>
+                <li><strong>Causa:</strong> El navegador puede tener restricciones de rendimiento</li>
+                <li><strong>Solución:</strong> Usa Chrome o Firefox actualizado. Evita tener muchas pestañas abiertas.</li>
+            </ul>
+        </div>
+
+        <!-- SECCIÓN 6: CONSEJOS ADICIONALES -->
+        <h2><span class="emoji">💡</span> Consejos Adicionales</h2>
+
+        <div class="step-card">
+            <h3>Para mejores resultados:</h3>
+            <ul>
+                <li>📝 <strong>Prepara las preguntas con anticipación</strong> - No las crees durante la clase</li>
+                <li>🎯 <strong>Usa explicaciones claras y concisas</strong> - Máximo 2-3 oraciones</li>
+                <li>⏱️ <strong>Ajusta el tiempo</strong> según la dificultad de las preguntas</li>
+                <li>🏆 <strong>Celebra a los ganadores</strong> - Motiva a los alumnos</li>
+                <li>📊 <strong>Revisa los resultados</strong> después del juego para identificar temas que necesitan refuerzo</li>
+                <li>🔄 <strong>Varía los temas</strong> - Mantén el interés de los alumnos</li>
+                <li>👥 <strong>Fomenta la competencia sana</strong> - El objetivo es aprender, no solo ganar</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <strong>✅ Resumen rápido:</strong>
+            <ol style="margin-top:10px;">
+                <li>Abre el archivo HTML en tu navegador</li>
+                <li>Crea o selecciona preguntas con explicaciones</li>
+                <li>Inicia la partida y comparte el código/QR</li>
+                <li>Espera a que los alumnos se conecten</li>
+                <li>¡Comienza a jugar!</li>
+                <li>Revisa explicaciones después de cada pregunta</li>
+                <li>¡Celebra el aprendizaje!</li>
+            </ol>
+        </div>
+
+        <div style="text-align:center; margin-top:40px; padding:20px;">
+            <p style="color:rgba(255,255,255,0.5);">
+                ¿Necesitas ayuda adicional? Revisa esta guía o contacta al desarrollador.
+            </p>
+            <button class="btn btn-primary" onclick="window.print()" style="margin-top:15px;">
+                🖨️ Imprimir esta Guía
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        let qrCodeInstance = null;
+
+        function generateQR() {
+            const container = document.getElementById('qr-container');
+            container.innerHTML = '';
+            
+            // Default URL - user should replace this with their actual hosted URL
+            const url = window.location.href || 'https://ejemplo.com/quizlive';
+            
+            try {
+                qrCodeInstance = new QRCode(container, {
+                    text: url,
+                    width: 220,
+                    height: 220,
+                    colorDark: '#1a0533',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } catch(e) {
+                // Fallback: create a simple QR representation
+                container.innerHTML = `
+                    <div style="text-align:center; padding:20px;">
+                        <p style="color:#1a0533; font-weight:600; margin-bottom:10px;">QR Code</p>
+                        <p style="color:#666; font-size:0.9rem;">URL: ${url.substring(0, 40)}...</p>
+                        <p style="color:#999; font-size:0.8rem; margin-top:10px;">
+                            Usa qr-code-generator.com<br>para crear tu QR personalizado
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qr-container canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'quizlive-qr.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            } else {
+                alert('Primero genera el código QR haciendo clic en "Generar Código QR"');
+            }
+        }
+
+        // Auto-generate QR on load
+        window.addEventListener('load', () => {
+            setTimeout(generateQR, 500);
+        });
+    </script>
+</body>
+</html>
