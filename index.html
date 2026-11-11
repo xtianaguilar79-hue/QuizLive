@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizLive - Guía Completa</title>
+    <title>QuizLive - Juego de Preguntas</title>
     <link href="https://cdn.jsdelivr.net/npm/@fontsource/poppins@5.0.8/index.min.css" rel="stylesheet">
     <style>
         * {
@@ -16,650 +16,1798 @@
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #1a0533 0%, #2d1b69 50%, #11001c 100%);
             min-height: 100vh;
+            overflow-x: hidden;
             color: white;
-            line-height: 1.6;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px;
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
         }
 
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.6); }
+        }
+
+        @keyframes confettiFall {
+            to {
+                top: 110vh;
+                transform: rotate(720deg);
+            }
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
             background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-
-        h2 {
-            color: #ffd93d;
-            margin: 30px 0 15px;
-            font-size: 1.5rem;
-        }
-
-        h3 {
-            color: #6bcb77;
-            margin: 20px 0 10px;
-        }
-
-        p, li {
-            color: rgba(255,255,255,0.85);
             margin-bottom: 10px;
-        }
-
-        ul, ol {
-            margin-left: 25px;
-            margin-bottom: 15px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        .step-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6bcb77, #4d96ff);
-            color: white;
-            font-weight: 800;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .step-title {
-            display: flex;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .highlight {
-            background: rgba(255, 217, 61, 0.2);
-            padding: 2px 8px;
-            border-radius: 4px;
-            color: #ffd93d;
-            font-weight: 600;
-        }
-
-        .code-block {
-            background: rgba(0,0,0,0.4);
-            border-radius: 10px;
-            padding: 15px 20px;
-            font-family: monospace;
-            font-size: 0.95rem;
-            color: #6bcb77;
-            margin: 10px 0;
-            overflow-x: auto;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .qr-section {
             text-align: center;
-            margin: 30px 0;
-            padding: 30px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            border: 2px solid rgba(255,255,255,0.15);
         }
 
-        .qr-placeholder {
-            width: 250px;
-            height: 250px;
-            margin: 20px auto;
-            background: white;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+        .subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            text-align: center;
         }
 
         .btn {
-            padding: 14px 30px;
+            padding: 16px 40px;
             border: none;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Poppins', sans-serif;
-            display: inline-block;
-            margin: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #6bcb77, #4d96ff);
             color: white;
+            margin: 10px;
         }
 
         .btn-secondary {
             background: linear-gradient(135deg, #ff6b6b, #ffd93d);
             color: #1a0533;
+            margin: 10px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        .btn-small {
+            padding: 10px 24px;
+            font-size: 0.9rem;
         }
 
-        .note {
-            background: rgba(77, 150, 255, 0.15);
-            border-left: 4px solid #4d96ff;
-            padding: 15px 20px;
-            border-radius: 0 10px 10px 0;
-            margin: 15px 0;
-        }
-
-        .warning {
-            background: rgba(255, 107, 107, 0.15);
-            border-left: 4px solid #ff6b6b;
-            padding: 15px 20px;
-            border-radius: 0 10px 10px 0;
-            margin: 15px 0;
-        }
-
-        .success {
-            background: rgba(107, 203, 119, 0.15);
-            border-left: 4px solid #6bcb77;
-            padding: 15px 20px;
-            border-radius: 0 10px 10px 0;
-            margin: 15px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        th {
+        .input-field {
+            padding: 16px 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            font-size: 1.2rem;
             background: rgba(255,255,255,0.1);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            width: 300px;
+            max-width: 90vw;
+            margin: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #6bcb77;
+        }
+
+        .input-field::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Host Screen */
+        .host-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .room-code-display {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px 50px;
+            margin: 20px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .room-code-label {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 5px;
+        }
+
+        .room-code-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 8px;
             color: #ffd93d;
+        }
+
+        .host-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .player-count {
+            background: rgba(107, 203, 119, 0.2);
+            border: 2px solid #6bcb77;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-weight: 600;
+            color: #6bcb77;
+        }
+
+        .question-area {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
             font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
 
-        td {
+        .timer-display {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 auto 20px;
+            animation: timerPulse 1s infinite;
+            border: 3px solid #ffd93d;
+        }
+
+        .timer-display.warning {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+            animation: pulse 0.5s infinite;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .answer-card {
+            padding: 25px;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .answer-card.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .answer-card.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .answer-card.yellow { background: linear-gradient(135deg, #f39c12, #e67e22); color: #1a0533; }
+        .answer-card.green { background: linear-gradient(135deg, #27ae60, #229954); }
+
+        .answer-card .answer-count {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .answer-card.correct {
+            box-shadow: 0 0 30px rgba(107, 203, 119, 0.8);
+            border: 3px solid #6bcb77;
+        }
+
+        .answer-card.wrong {
+            opacity: 0.5;
+        }
+
+        /* Player Screen */
+        .player-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .player-answer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .player-answer-btn {
+            padding: 20px 15px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .player-answer-btn.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .player-answer-btn.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .player-answer-btn.yellow { background: linear-gradient(135deg, #f39c12, #e67e22); color: #1a0533; }
+        .player-answer-btn.green { background: linear-gradient(135deg, #27ae60, #229954); }
+
+        .player-answer-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .player-answer-btn:active {
+            transform: scale(0.95);
+        }
+
+        .player-answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .player-answer-btn.selected {
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            border: 3px solid white;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .leaderboard-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffd93d;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .leaderboard-item:nth-child(1) {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .leaderboard-item:nth-child(2) {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.3), rgba(192, 192, 192, 0.1));
+            border: 2px solid rgba(192, 192, 192, 0.5);
+        }
+
+        .leaderboard-item:nth-child(3) {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.3), rgba(205, 127, 50, 0.1));
+            border: 2px solid rgba(205, 127, 50, 0.5);
+        }
+
+        .rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            width: 50px;
+            text-align: center;
+        }
+
+        .player-name-lb {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        .player-score-lb {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffd93d;
+        }
+
+        /* Waiting animation */
+        .waiting-dots {
+            display: flex;
+            gap: 8px;
+            margin: 20px;
+        }
+
+        .waiting-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffd93d;
+            animation: bounceIn 0.6s ease infinite;
+        }
+
+        .waiting-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .waiting-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Player waiting screen */
+        .player-waiting {
+            text-align: center;
+        }
+
+        .player-waiting .emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        /* Result feedback */
+        .result-feedback {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .result-feedback .emoji {
+            font-size: 5rem;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .result-feedback .text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        .result-feedback .points {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd93d;
+            margin-top: 10px;
+        }
+
+        .result-feedback .explanation {
+            font-size: 1rem;
             color: rgba(255,255,255,0.8);
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            line-height: 1.5;
         }
 
-        .emoji {
-            font-size: 1.3em;
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            max-width: 600px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin: 15px auto;
+            overflow: hidden;
         }
 
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6bcb77, #4d96ff);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .question-counter {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            h1 { font-size: 1.8rem; }
-            .container { padding: 20px 15px; }
-            .step-card { padding: 18px; }
+            .logo { font-size: 2rem; }
+            .room-code-value { font-size: 2.5rem; }
+            .question-text { font-size: 1.3rem; padding: 20px; }
+            .answers-grid { grid-template-columns: 1fr; }
+            .answer-card { min-height: 70px; padding: 15px; }
+            .btn { padding: 12px 30px; font-size: 1rem; }
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall 3s ease-in forwards;
+        }
+
+        /* QR Info */
+        .join-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .join-info p {
+            color: rgba(255,255,255,0.7);
+            margin: 5px 0;
+        }
+
+        .join-info .url {
+            color: #4d96ff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Custom question editor */
+        .editor-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .question-editor {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .question-editor input,
+        .question-editor textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .question-editor input:focus,
+        .question-editor textarea:focus {
+            border-color: #4d96ff;
+        }
+
+        .question-editor textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .correct-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .correct-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .correct-btn.selected {
+            border-color: #6bcb77;
+            background: rgba(107, 203, 119, 0.2);
+            color: #6bcb77;
+        }
+
+        .correct-btn:hover {
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .players-waiting-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px;
+            max-width: 800px;
+        }
+
+        .player-chip {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: bounceIn 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            border-color: #4d96ff;
+            background: rgba(77, 150, 255, 0.2);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .answer-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .explanation-inputs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .answer-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .qr-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .qr-canvas {
+            margin: 15px auto;
+            border-radius: 12px;
+            background: white;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 QuizLive - Guía Completa de Uso</h1>
-        <p style="text-align:center; color:rgba(255,255,255,0.6); margin-bottom:30px;">
-            Todo lo que necesitas saber para usar el juego con tus alumnos
-        </p>
 
-        <!-- SECCIÓN 1: CÓMO SE UNE UN PARTICIPANTE -->
-        <h2><span class="emoji">📱</span> ¿Cómo se une un participante al juego?</h2>
+    <!-- SCREEN: Main Menu -->
+    <div id="screen-main" class="screen active">
+        <div class="logo">🎮 QuizLive</div>
+        <p class="subtitle">Juego interactivo de preguntas y respuestas en tiempo real</p>
+        <button class="btn btn-primary" onclick="showScreen('screen-host-setup')">🖥️ Crear Partida (Profesor)</button>
+        <button class="btn btn-secondary" onclick="showScreen('screen-join')">📱 Unirse como Alumno</button>
+    </div>
+
+    <!-- SCREEN: Host Setup -->
+    <div id="screen-host-setup" class="screen">
+        <div class="logo">🖥️ Configurar Partida</div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchEditorTab('preset')">Preguntas Prediseñadas</button>
+            <button class="nav-tab" onclick="switchEditorTab('custom')">Crear Preguntas</button>
+        </div>
         
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">1</span>
-                El alumno abre la página web
-            </div>
-            <p>El alumno debe abrir la misma página web que tú en su celular o computadora. Puede hacerlo de tres formas:</p>
-            <ul>
-                <li><strong>Opción A:</strong> Escaneando el código QR que generas (ver sección más abajo)</li>
-                <li><strong>Opción B:</strong> Escribiendo la URL directamente en el navegador</li>
-                <li><strong>Opción C:</strong> Haciendo clic en un enlace que les compartas</li>
-            </ul>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">2</span>
-                Selecciona "Unirse como Alumno"
-            </div>
-            <p>En la pantalla principal, el alumno verá dos botones. Debe presionar el botón <span class="highlight">📱 Unirse como Alumno</span>.</p>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">3</span>
-                Ingresa el código de sala
-            </div>
-            <p>Tú (el profesor) verás un <span class="highlight">código de 5 caracteres</span> en tu pantalla (ejemplo: <code>A3K7M</code>). El alumno debe escribir ese código exactamente igual en el campo "Código de sala".</p>
-            <div class="note">
-                <strong>💡 Nota:</strong> El código distingue entre mayúsculas y minúsculas. Asegúrate de que los alumnos lo escriban correctamente.
+        <div id="editor-preset">
+            <p class="subtitle">Selecciona un tema para jugar con preguntas prediseñadas</p>
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px;">
+                <button class="btn btn-primary btn-small" onclick="loadPreset('ciencia')">🔬 Ciencia</button>
+                <button class="btn btn-primary btn-small" onclick="loadPreset('historia')">📜 Historia</button>
+                <button class="btn btn-primary btn-small" onclick="loadPreset('mates')">🔢 Matemáticas</button>
+                <button class="btn btn-primary btn-small" onclick="loadPreset('geografia')">🌍 Geografía</button>
+                <button class="btn btn-primary btn-small" onclick="loadPreset('cultura')">🎭 Cultura General</button>
             </div>
         </div>
 
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">4</span>
-                Escribe su nombre
-            </div>
-            <p>El alumno escribe su nombre en el campo correspondiente y presiona <span class="highlight">🎮 Unirse al Juego</span>.</p>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">5</span>
-                Espera a que inicie el juego
-            </div>
-            <p>Una vez conectado, el alumno verá una pantalla de espera con su nombre. Cuando tú presiones <span class="highlight">▶️ Comenzar Juego</span>, todos los alumnos conectados recibirán la primera pregunta automáticamente.</p>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">6</span>
-                Responde las preguntas
-            </div>
-            <p>Cada pregunta aparece con 4 opciones de colores diferentes (rojo, azul, amarillo, verde). El alumno tiene <span class="highlight">20 segundos</span> para seleccionar una respuesta tocando el botón correspondiente.</p>
-            <ul>
-                <li>Mientras más rápido responda correctamente, más puntos gana</li>
-                <li>Solo puede seleccionar una respuesta por pregunta</li>
-                <li>Si no responde a tiempo, no obtiene puntos</li>
-            </ul>
-        </div>
-
-        <!-- SECCIÓN 2: EXPLICACIONES DE RESPUESTAS -->
-        <h2><span class="emoji">💡</span> Explicaciones de Respuestas Correctas e Incorrectas</h2>
-
-        <div class="step-card">
-            <h3>¿Qué son las explicaciones?</h3>
-            <p>Las explicaciones son textos que aparecen después de cada pregunta para reforzar el aprendizaje:</p>
-            <ul>
-                <li><strong>Explicación correcta:</strong> Aparece cuando el alumno acierta. Refuerza por qué esa es la respuesta correcta.</li>
-                <li><strong>Explicación incorrecta:</strong> Aparece cuando el alumno falla. Explica cuál era la respuesta correcta y por qué.</li>
-            </ul>
-        </div>
-
-        <div class="step-card">
-            <h3>¿Cómo agregar explicaciones a tus preguntas?</h3>
-            <p>Para agregar explicaciones, debes crear preguntas personalizadas siguiendo estos pasos:</p>
-            
-            <ol>
-                <li>Ve a la pantalla principal y selecciona <span class="highlight">🖥️ Crear Partida (Profesor)</span></li>
-                <li>Selecciona la pestaña <span class="highlight">Crear Preguntas</span></li>
-                <li>Haz clic en <span class="highlight">+ Agregar Pregunta</span></li>
-                <li>Completa los campos:
-                    <table>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                        </tr>
-                        <tr>
-                            <td>Pregunta</td>
-                            <td>El texto de la pregunta que verán los alumnos</td>
-                        </tr>
-                        <tr>
-                            <td>Respuesta A (rojo)</td>
-                            <td>Primera opción de respuesta</td>
-                        </tr>
-                        <tr>
-                            <td>Respuesta B (azul)</td>
-                            <td>Segunda opción de respuesta</td>
-                        </tr>
-                        <tr>
-                            <td>Respuesta C (amarillo)</td>
-                            <td>Tercera opción de respuesta</td>
-                        </tr>
-                        <tr>
-                            <td>Respuesta D (verde)</td>
-                            <td>Cuarta opción de respuesta</td>
-                        </tr>
-                        <tr>
-                            <td>Respuesta correcta</td>
-                            <td>Selecciona cuál de las 4 es la correcta (A, B, C o D)</td>
-                        </tr>
-                        <tr>
-                            <td>Explicación si acierta</td>
-                            <td>Texto que aparece cuando el alumno responde correctamente</td>
-                        </tr>
-                        <tr>
-                            <td>Explicación si falla</td>
-                            <td>Texto que aparece cuando el alumno responde incorrectamente</td>
-                        </tr>
-                    </table>
-                </li>
-            </ol>
-        </div>
-
-        <div class="step-card">
-            <h3>Ejemplo de pregunta con explicaciones:</h3>
-            <div class="code-block">
-<strong>Pregunta:</strong> ¿Cuál es el planeta más grande del sistema solar?
-
-<strong>Respuesta A (rojo):</strong> Júpiter ✅ (CORRECTA)
-<strong>Respuesta B (azul):</strong> Saturno
-<strong>Respuesta C (amarillo):</strong> Neptuno
-<strong>Respuesta D (verde):</strong> Urano
-
-<strong>Explicación si acierta:</strong>
-"¡Correcto! 🎉 Júpiter es el planeta más grande del sistema solar. 
-Tiene un diámetro de aproximadamente 139,820 km, que es más de 11 veces 
-el diámetro de la Tierra. ¡Es tan grande que cabrían más de 1,300 Tierras dentro!"
-
-<strong>Explicación si falla:</strong>
-"La respuesta correcta es Júpiter. Aunque Saturno es el segundo planeta 
-más grande, Júpiter lo supera significativamente. Júpiter es un gigante 
-gaseoso compuesto principalmente de hidrógeno y helio."
+        <div id="editor-custom" style="display:none;">
+            <div class="editor-container">
+                <div id="custom-questions-list"></div>
+                <button class="btn btn-primary btn-small" onclick="addQuestionEditor()" style="margin:10px;">+ Agregar Pregunta</button>
             </div>
         </div>
 
-        <div class="success">
-            <strong>✅ Beneficios de usar explicaciones:</strong>
-            <ul style="margin-top:10px;">
-                <li>Los alumnos aprenden incluso cuando se equivocan</li>
-                <li>Se refuerzan los conceptos correctos</li>
-                <li>Se proporciona contexto adicional valioso</li>
-                <li>Mejora la retención del conocimiento</li>
-            </ul>
-        </div>
+        <button class="btn btn-secondary" onclick="startGame()" style="margin-top:20px;">🚀 Iniciar Partida</button>
+        <button class="btn btn-small" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="showScreen('screen-main')">← Volver</button>
+    </div>
 
-        <!-- SECCIÓN 3: PASO A PASO PARA PONER EN FUNCIONAMIENTO -->
-        <h2><span class="emoji">🚀</span> Paso a Paso: Cómo Poner en Funcionamiento el Juego</h2>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">1</span>
-                Preparación previa (antes de la clase)
+    <!-- SCREEN: Host Waiting Room -->
+    <div id="screen-host-waiting" class="screen">
+        <div class="host-container">
+            <div class="host-header">
+                <div class="player-count" id="player-count-waiting">👥 0 jugadores</div>
             </div>
-            <ol>
-                <li><strong>Guarda el archivo HTML</strong> en tu computadora con el nombre <code>quizlive.html</code></li>
-                <li><strong>Prueba el juego</strong> abriendo el archivo en tu navegador (Chrome, Firefox, Edge)</li>
-                <li><strong>Crea tus preguntas</strong> usando la opción "Crear Preguntas" o selecciona un tema prediseñado</li>
-                <li><strong>Agrega las explicaciones</strong> para cada pregunta (correcta e incorrecta)</li>
-                <li><strong>Genera el código QR</strong> (ver sección siguiente) para compartir con los alumnos</li>
-            </ol>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">2</span>
-                Durante la clase - Configuración
+            <div class="room-code-display">
+                <div class="room-code-label">Código de la sala</div>
+                <div class="room-code-value" id="room-code-display">----</div>
             </div>
-            <ol>
-                <li><strong>Abre el archivo</strong> <code>quizlive.html</code> en tu navegador</li>
-                <li><strong>Proyecta tu pantalla</strong> para que todos los alumnos vean el código de sala</li>
-                <li><strong>Presiona</strong> <span class="highlight">🖥️ Crear Partida (Profesor)</span></li>
-                <li><strong>Selecciona</strong> un tema prediseñado O crea tus propias preguntas</li>
-                <li><strong>Presiona</strong> <span class="highlight">🚀 Iniciar Partida</span></li>
-                <li><strong>Anota el código de sala</strong> que aparece en pantalla (ej: <code>K7M3P</code>)</li>
-            </ol>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">3</span>
-                Durante la clase - Conexión de alumnos
+            <div class="join-info">
+                <p>Los alumnos deben abrir esta misma página en su celular</p>
+                <p>y seleccionar "Unirse como Alumno"</p>
+                <p class="url">Ingresa el código de sala para conectarse</p>
             </div>
-            <ol>
-                <li><strong>Muestra el código QR</strong> o comparte la URL con los alumnos</li>
-                <li><strong>Diles el código de sala</strong> en voz alta y escríbelo en la pizarra</li>
-                <li><strong>Espera</strong> a que los alumnos se conecten (verás sus nombres aparecer en tu pantalla)</li>
-                <li><strong>Verifica</strong> que todos estén conectados antes de comenzar</li>
-            </ol>
-            <div class="note">
-                <strong>💡 Consejo:</strong> Si algún alumno tiene problemas para conectarse, verifica que:
-                <ul style="margin-top:8px;">
-                    <li>Esté usando el mismo archivo/URL que tú</li>
-                    <li>El código de sala esté escrito correctamente</li>
-                    <li>Tenga conexión a internet</li>
-                </ul>
+            <div class="qr-section">
+                <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">Escanea este código QR para unirte:</p>
+                <canvas id="qr-canvas" class="qr-canvas" width="200" height="200"></canvas>
             </div>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">4</span>
-                Durante la clase - Jugando
+            <div class="players-waiting-list" id="waiting-players-list"></div>
+            <div class="waiting-dots">
+                <span></span><span></span><span></span>
             </div>
-            <ol>
-                <li><strong>Presiona</strong> <span class="highlight">▶️ Comenzar Juego</span> cuando todos estén listos</li>
-                <li><strong>Lee la pregunta</strong> en voz alta para todos los alumnos</li>
-                <li><strong>Espera</strong> los 20 segundos mientras los alumnos responden</li>
-                <li><strong>Revisa los resultados</strong> que aparecen automáticamente</li>
-                <li><strong>Lee las explicaciones</strong> para reforzar el aprendizaje</li>
-                <li><strong>Presiona</strong> <span class="highlight">Siguiente Pregunta →</span> para continuar</li>
-                <li><strong>Repite</strong> hasta completar todas las preguntas</li>
-            </ol>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">
-                <span class="step-number">5</span>
-                Final del juego
-            </div>
-            <ol>
-                <li>Al terminar todas las preguntas, se muestra el <strong>podio final</strong></li>
-                <li>Puedes <strong>felicitar a los ganadores</strong></li>
-                <li>Presiona <span class="highlight">🔄 Jugar de Nuevo</span> para otra ronda</li>
-                <li>O presiona <span class="highlight">← Menú Principal</span> para salir</li>
-            </ol>
-        </div>
-
-        <div class="warning">
-            <strong>⚠️ Importante sobre la conexión:</strong>
-            <p style="margin-top:8px;">Este juego funciona mediante <strong>BroadcastChannel API</strong> y <strong>localStorage</strong>, lo que significa que:</p>
-            <ul style="margin-top:8px;">
-                <li><strong>Funciona mejor</strong> cuando todos usan el MISMO navegador en la MISMA computadora (modo demostración)</li>
-                <li>Para uso real con múltiples dispositivos, necesitarías un <strong>servidor backend</strong> (Node.js, Firebase, etc.)</li>
-                <li>La versión actual es ideal para <strong>demostraciones y pruebas</strong></li>
-                <li>Para producción real, considera usar plataformas como Kahoot, Quizizz o implementar un servidor WebSocket</li>
-            </ul>
-        </div>
-
-        <!-- SECCIÓN 4: CÓDIGO QR -->
-        <h2><span class="emoji">📷</span> Código QR para los Alumnos</h2>
-
-        <div class="qr-section">
-            <h3 style="color:#ffd93d; margin-bottom:15px;">Escanea este código para unirte al juego</h3>
-            <p style="color:rgba(255,255,255,0.7); margin-bottom:20px;">
-                Los alumnos pueden escanear este código QR con la cámara de su celular<br>
-                para abrir directamente la página del juego
-            </p>
-            
-            <div class="qr-placeholder" id="qr-container">
-                <!-- QR code will be generated here -->
-            </div>
-
-            <div class="note" style="text-align:left; margin-top:20px;">
-                <strong>📌 Instrucciones para generar el QR:</strong>
-                <ol style="margin-top:10px;">
-                    <li>Sube el archivo <code>quizlive.html</code> a un servidor web o hosting gratuito (GitHub Pages, Netlify, Vercel, etc.)</li>
-                    <li>Copia la URL completa donde está alojado el archivo</li>
-                    <li>Usa cualquier generador de QR online (como qr-code-generator.com) para crear el código</li>
-                    <li>Imprime el QR y muéstralo a los alumnos, o proyéctalo en la pantalla</li>
-                </ol>
-            </div>
-
-            <button class="btn btn-primary" onclick="generateQR()">🔄 Generar Código QR</button>
-            <button class="btn btn-secondary" onclick="downloadQR()">⬇️ Descargar QR</button>
-        </div>
-
-        <div class="step-card">
-            <h3>Opciones de alojamiento gratuitas:</h3>
-            <table>
-                <tr>
-                    <th>Servicio</th>
-                    <th>Ventajas</th>
-                    <th>URL ejemplo</th>
-                </tr>
-                <tr>
-                    <td>GitHub Pages</td>
-                    <td>Gratis, fácil de usar</td>
-                    <td>https://tuusuario.github.io/quizlive</td>
-                </tr>
-                <tr>
-                    <td>Netlify</td>
-                    <td>Deploy automático, muy rápido</td>
-                    <td>https://quizlive-tunombre.netlify.app</td>
-                </tr>
-                <tr>
-                    <td>Vercel</td>
-                    <td>Rápido, buena documentación</td>
-                    <td>https://quizlive-tunombre.vercel.app</td>
-                </tr>
-                <tr>
-                    <td>Google Drive</td>
-                    <td>Familiar, pero limitado</td>
-                    <td>No recomendado para HTML interactivo</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- SECCIÓN 5: TROUBLESHOOTING -->
-        <h2><span class="emoji">🔧</span> Solución de Problemas Comunes</h2>
-
-        <div class="step-card">
-            <h3>Problema: Los alumnos no pueden conectarse</h3>
-            <ul>
-                <li><strong>Causa:</strong> Están usando diferentes navegadores o dispositivos</li>
-                <li><strong>Solución:</strong> Esta versión usa BroadcastChannel/localStorage que solo funciona entre pestañas del mismo navegador. Para uso real multi-dispositivo, necesitas un servidor backend.</li>
-            </ul>
-        </div>
-
-        <div class="step-card">
-            <h3>Problema: El código QR no funciona</h3>
-            <ul>
-                <li><strong>Causa:</strong> La URL en el QR es incorrecta o el archivo no está publicado</li>
-                <li><strong>Solución:</strong> Verifica que la URL sea accesible desde cualquier dispositivo. Prábala tú primero desde tu celular.</li>
-            </ul>
-        </div>
-
-        <div class="step-card">
-            <h3>Problema: Las explicaciones no aparecen</h3>
-            <ul>
-                <li><strong>Causa:</strong> No agregaste las explicaciones al crear la pregunta</li>
-                <li><strong>Solución:</strong> Asegúrate de completar ambos campos de explicación (correcta e incorrecta) al crear cada pregunta personalizada.</li>
-            </ul>
-        </div>
-
-        <div class="step-card">
-            <h3>Problema: El temporizador no funciona correctamente</h3>
-            <ul>
-                <li><strong>Causa:</strong> El navegador puede tener restricciones de rendimiento</li>
-                <li><strong>Solución:</strong> Usa Chrome o Firefox actualizado. Evita tener muchas pestañas abiertas.</li>
-            </ul>
-        </div>
-
-        <!-- SECCIÓN 6: CONSEJOS ADICIONALES -->
-        <h2><span class="emoji">💡</span> Consejos Adicionales</h2>
-
-        <div class="step-card">
-            <h3>Para mejores resultados:</h3>
-            <ul>
-                <li>📝 <strong>Prepara las preguntas con anticipación</strong> - No las crees durante la clase</li>
-                <li>🎯 <strong>Usa explicaciones claras y concisas</strong> - Máximo 2-3 oraciones</li>
-                <li>⏱️ <strong>Ajusta el tiempo</strong> según la dificultad de las preguntas</li>
-                <li>🏆 <strong>Celebra a los ganadores</strong> - Motiva a los alumnos</li>
-                <li>📊 <strong>Revisa los resultados</strong> después del juego para identificar temas que necesitan refuerzo</li>
-                <li>🔄 <strong>Varía los temas</strong> - Mantén el interés de los alumnos</li>
-                <li>👥 <strong>Fomenta la competencia sana</strong> - El objetivo es aprender, no solo ganar</li>
-            </ul>
-        </div>
-
-        <div class="success">
-            <strong>✅ Resumen rápido:</strong>
-            <ol style="margin-top:10px;">
-                <li>Abre el archivo HTML en tu navegador</li>
-                <li>Crea o selecciona preguntas con explicaciones</li>
-                <li>Inicia la partida y comparte el código/QR</li>
-                <li>Espera a que los alumnos se conecten</li>
-                <li>¡Comienza a jugar!</li>
-                <li>Revisa explicaciones después de cada pregunta</li>
-                <li>¡Celebra el aprendizaje!</li>
-            </ol>
-        </div>
-
-        <div style="text-align:center; margin-top:40px; padding:20px;">
-            <p style="color:rgba(255,255,255,0.5);">
-                ¿Necesitas ayuda adicional? Revisa esta guía o contacta al desarrollador.
-            </p>
-            <button class="btn btn-primary" onclick="window.print()" style="margin-top:15px;">
-                🖨️ Imprimir esta Guía
-            </button>
+            <p style="color:rgba(255,255,255,0.6); margin:10px;">Esperando jugadores...</p>
+            <button class="btn btn-primary" onclick="startQuestions()" id="btn-start-game">▶️ Comenzar Juego</button>
         </div>
     </div>
 
+    <!-- SCREEN: Host Question -->
+    <div id="screen-host-question" class="screen">
+        <div class="host-container">
+            <div class="host-header">
+                <div class="player-count" id="player-count-game">👥 0 jugadores</div>
+                <div class="question-counter" id="question-counter">Pregunta 1 de 5</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="timer-display" id="timer-display">20</div>
+            <div class="question-area">
+                <div class="question-text" id="host-question-text">Pregunta</div>
+                <div class="answers-grid" id="host-answers-grid"></div>
+            </div>
+            <p style="color:rgba(255,255,255,0.5); margin-top:15px; font-size:0.9rem;" id="answer-status">Esperando respuestas...</p>
+        </div>
+    </div>
+
+    <!-- SCREEN: Host Results -->
+    <div id="screen-host-results" class="screen">
+        <div class="host-container">
+            <div class="leaderboard">
+                <div class="leaderboard-title" id="results-title">📊 Resultados</div>
+                <div id="leaderboard-list"></div>
+            </div>
+            <button class="btn btn-primary" onclick="nextQuestion()" id="btn-next">Siguiente Pregunta →</button>
+        </div>
+    </div>
+
+    <!-- SCREEN: Host Final -->
+    <div id="screen-host-final" class="screen">
+        <div class="host-container">
+            <div class="leaderboard">
+                <div class="leaderboard-title">🏆 ¡Juego Terminado!</div>
+                <div id="final-leaderboard"></div>
+            </div>
+            <button class="btn btn-primary" onclick="resetGame()">🔄 Jugar de Nuevo</button>
+            <button class="btn btn-small" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="showScreen('screen-main')">← Menú Principal</button>
+        </div>
+    </div>
+
+    <!-- SCREEN: Join -->
+    <div id="screen-join" class="screen">
+        <div class="logo">📱 Unirse</div>
+        <p class="subtitle">Ingresa el código de la sala</p>
+        <input type="text" class="input-field" id="join-code-input" placeholder="Código de sala" maxlength="6" style="font-size:2rem; letter-spacing:8px; text-transform:uppercase;">
+        <input type="text" class="input-field" id="join-name-input" placeholder="Tu nombre">
+        <button class="btn btn-primary" onclick="joinGame()">🎮 Unirse al Juego</button>
+        <p id="join-error" style="color:#ff6b6b; margin-top:10px; display:none;">Código no encontrado. Verifica e intenta de nuevo.</p>
+        <button class="btn btn-small" style="background:rgba(255,255,255,0.1); color:white; margin-top:20px;" onclick="showScreen('screen-main')">← Volver</button>
+    </div>
+
+    <!-- SCREEN: Player Waiting -->
+    <div id="screen-player-waiting" class="screen">
+        <div class="player-container player-waiting">
+            <div class="emoji">🎮</div>
+            <h2 id="player-welcome">¡Bienvenido!</h2>
+            <p style="color:rgba(255,255,255,0.7); margin:10px;">Esperando a que el profesor inicie el juego...</p>
+            <div class="waiting-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN: Player Question -->
+    <div id="screen-player-question" class="screen">
+        <div class="player-container">
+            <div class="question-counter" id="player-question-counter">Pregunta 1 de 5</div>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="player-progress-fill" style="width:0%"></div>
+            </div>
+            <div class="timer-display" id="player-timer">20</div>
+            <div class="question-text" id="player-question-text" style="font-size:1.3rem;">Pregunta</div>
+            <div class="player-answer-grid" id="player-answer-grid"></div>
+        </div>
+    </div>
+
+    <!-- SCREEN: Player Result -->
+    <div id="screen-player-result" class="screen">
+        <div class="player-container">
+            <div class="result-feedback" id="player-result-feedback">
+                <div class="emoji">✅</div>
+                <div class="text">¡Correcto!</div>
+                <div class="points">+500 pts</div>
+                <div class="explanation" id="player-explanation"></div>
+            </div>
+            <p style="color:rgba(255,255,255,0.6); margin-top:20px;">Esperando siguiente pregunta...</p>
+        </div>
+    </div>
+
+    <!-- SCREEN: Player Final -->
+    <div id="screen-player-final" class="screen">
+        <div class="player-container">
+            <div class="result-feedback">
+                <div class="emoji" id="player-final-emoji">🏆</div>
+                <div class="text" id="player-final-text">¡Juego Terminado!</div>
+                <div class="points" id="player-final-score">0 pts</div>
+                <p style="color:rgba(255,255,255,0.6); margin-top:10px;" id="player-final-rank">Posición: #1</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="confetti-container" id="confetti-container"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script>
-        let qrCodeInstance = null;
+        // ==================== GAME STATE ====================
+        let gameState = {
+            roomCode: '',
+            host: false,
+            playerId: '',
+            playerName: '',
+            players: {},
+            questions: [],
+            currentQuestion: 0,
+            timeLeft: 20,
+            timerInterval: null,
+            answered: false,
+            scores: {}
+        };
 
-        function generateQR() {
-            const container = document.getElementById('qr-container');
-            container.innerHTML = '';
-            
-            // Default URL - user should replace this with their actual hosted URL
-            const url = window.location.href || 'https://ejemplo.com/quizlive';
-            
+        // BroadcastChannel for communication between tabs
+        let channel;
+        try {
+            channel = new BroadcastChannel('quizlive_channel');
+            channel.onmessage = handleChannelMessage;
+        } catch(e) {
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'quizlive_message' && e.newValue) {
+                    try {
+                        handleChannelMessage({ data: JSON.parse(e.newValue) });
+                    } catch(err) {}
+                }
+            });
+        }
+
+        function sendMessage(msg) {
             try {
-                qrCodeInstance = new QRCode(container, {
-                    text: url,
-                    width: 220,
-                    height: 220,
+                channel.postMessage(msg);
+            } catch(e) {}
+            try {
+                localStorage.setItem('quizlive_message', JSON.stringify({...msg, _time: Date.now()}));
+            } catch(e) {}
+        }
+
+        // ==================== PRESET QUESTIONS WITH EXPLANATIONS ====================
+        const presetQuestions = {
+            ciencia: [
+                { 
+                    question: "¿Cuál es el planeta más grande del sistema solar?", 
+                    answers: ["Júpiter", "Saturno", "Neptuno", "Urano"], 
+                    correct: 0,
+                    explanationCorrect: "¡Correcto! 🎉 Júpiter es el planeta más grande del sistema solar. Tiene un diámetro de aproximadamente 139,820 km, que es más de 11 veces el diámetro de la Tierra.",
+                    explanationWrong: "La respuesta correcta es Júpiter. Aunque Saturno es el segundo planeta más grande, Júpiter lo supera significativamente con más de 1,300 Tierras cabiendo dentro."
+                },
+                { 
+                    question: "¿Cuántos huesos tiene el cuerpo humano adulto?", 
+                    answers: ["206", "300", "150", "180"], 
+                    correct: 0,
+                    explanationCorrect: "¡Excelente! 👏 El cuerpo humano adulto tiene exactamente 206 huesos. Los bebés nacen con aproximadamente 270 huesos, pero muchos se fusionan durante el crecimiento.",
+                    explanationWrong: "La respuesta correcta es 206 huesos. Los bebés nacen con más huesos (alrededor de 270), pero muchos se fusionan a medida que crecemos."
+                },
+                { 
+                    question: "¿Qué gas respiramos principalmente?", 
+                    answers: ["Oxígeno", "Nitrógeno", "CO2", "Hidrógeno"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 🌬️ El aire que respiramos está compuesto principalmente por nitrógeno (78%), seguido de oxígeno (21%). Aunque necesitamos oxígeno para vivir, el nitrógeno es el gas más abundante.",
+                    explanationWrong: "La respuesta correcta es Nitrógeno. Aunque necesitamos oxígeno para vivir, el aire está compuesto principalmente por nitrógeno (78%) y solo 21% de oxígeno."
+                },
+                { 
+                    question: "¿Cuál es el elemento químico más abundante en el universo?", 
+                    answers: ["Oxígeno", "Carbono", "Helio", "Hidrógeno"], 
+                    correct: 3,
+                    explanationCorrect: "¡Muy bien! ⭐ El hidrógeno es el elemento más abundante en el universo, representando aproximadamente el 75% de toda la materia visible. Es el combustible principal de las estrellas.",
+                    explanationWrong: "La respuesta correcta es Hidrógeno. Representa aproximadamente el 75% de toda la materia visible en el universo y es el combustible principal de las estrellas."
+                },
+                { 
+                    question: "¿Qué órgano produce la insulina?", 
+                    answers: ["Hígado", "Páncreas", "Riñón", "Estómago"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 🎯 El páncreas es el órgano encargado de producir insulina, una hormona esencial para regular los niveles de glucosa en la sangre.",
+                    explanationWrong: "La respuesta correcta es el Páncreas. Este órgano produce insulina, que es crucial para regular el azúcar en la sangre. Cuando falla, puede causar diabetes."
+                }
+            ],
+            historia: [
+                { 
+                    question: "¿En qué año llegó Colón a América?", 
+                    answers: ["1492", "1500", "1480", "1510"], 
+                    correct: 0,
+                    explanationCorrect: "¡Correcto! 🚢 Cristóbal Colón llegó a América el 12 de octubre de 1492, desembarcando en la isla de Guanahani (actual Bahamas).",
+                    explanationWrong: "La respuesta correcta es 1492. Cristóbal Colón llegó a América el 12 de octubre de ese año, marcando el inicio del contacto entre Europa y América."
+                },
+                { 
+                    question: "¿Quién pintó la Mona Lisa?", 
+                    answers: ["Miguel Ángel", "Leonardo da Vinci", "Rafael", "Botticelli"], 
+                    correct: 1,
+                    explanationCorrect: "¡Excelente! 🎨 Leonardo da Vinci pintó la Mona Lisa entre 1503 y 1519. Es una de las obras de arte más famosas del mundo y se encuentra en el Museo del Louvre en París.",
+                    explanationWrong: "La respuesta correcta es Leonardo da Vinci. Pintó la Mona Lisa entre 1503 y 1519, y actualmente se exhibe en el Museo del Louvre en París."
+                },
+                { 
+                    question: "¿En qué año comenzó la Segunda Guerra Mundial?", 
+                    answers: ["1935", "1939", "1941", "1945"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! ⚔️ La Segunda Guerra Mundial comenzó el 1 de septiembre de 1939 cuando Alemania invadió Polonia. Terminó en 1945.",
+                    explanationWrong: "La respuesta correcta es 1939. La guerra comenzó el 1 de septiembre de 1939 con la invasión alemana a Polonia y terminó en 1945."
+                },
+                { 
+                    question: "¿Cuál fue la primera civilización de Mesopotamia?", 
+                    answers: ["Babilonia", "Asiria", "Sumeria", "Persa"], 
+                    correct: 2,
+                    explanationCorrect: "¡Muy bien! 🏛️ Los sumerios fueron la primera civilización de Mesopotamia, desarrollándose alrededor del 4500 a.C. Inventaron la escritura cuneiforme.",
+                    explanationWrong: "La respuesta correcta es Sumeria. Los sumerios fueron la primera civilización mesopotámica, surgiendo alrededor del 4500 a.C. e inventando la escritura cuneiforme."
+                },
+                { 
+                    question: "¿Quién descubrió la penicilina?", 
+                    answers: ["Pasteur", "Fleming", "Koch", "Jenner"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 💊 Alexander Fleming descubrió la penicilina en 1928 por accidente cuando observó que un hongo había matado bacterias en su laboratorio.",
+                    explanationWrong: "La respuesta correcta es Alexander Fleming. Descubrió la penicilina en 1928 por accidente, revolucionando la medicina y salvando millones de vidas."
+                }
+            ],
+            mates: [
+                { 
+                    question: "¿Cuánto es 15 × 15?", 
+                    answers: ["225", "215", "235", "205"], 
+                    correct: 0,
+                    explanationCorrect: "¡Correcto! 🔢 15 × 15 = 225. Una forma fácil de calcularlo es: 15² = (10+5)² = 100 + 100 + 25 = 225.",
+                    explanationWrong: "La respuesta correcta es 225. Puedes calcularlo como 15² = (10+5)² = 100 + 100 + 25 = 225."
+                },
+                { 
+                    question: "¿Cuál es la raíz cuadrada de 144?", 
+                    answers: ["14", "11", "12", "13"], 
+                    correct: 2,
+                    explanationCorrect: "¡Excelente! √144 = 12, porque 12 × 12 = 144. Es uno de los cuadrados perfectos más conocidos.",
+                    explanationWrong: "La respuesta correcta es 12, porque 12 × 12 = 144. Los cuadrados perfectos cercanos son 11²=121 y 13²=169."
+                },
+                { 
+                    question: "¿Cuántos grados tiene un triángulo?", 
+                    answers: ["360°", "180°", "270°", "90°"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 📐 La suma de los ángulos internos de cualquier triángulo siempre es 180°. Esto es fundamental en geometría.",
+                    explanationWrong: "La respuesta correcta es 180°. La suma de los ángulos internos de cualquier triángulo siempre es 180°, sin importar su forma o tamaño."
+                },
+                { 
+                    question: "¿Qué es π (pi) aproximadamente?", 
+                    answers: ["3.14", "2.71", "1.61", "4.13"], 
+                    correct: 0,
+                    explanationCorrect: "¡Muy bien! 🔵 π (pi) ≈ 3.14159... Es la relación entre la circunferencia de un círculo y su diámetro. Es un número irracional infinito.",
+                    explanationWrong: "La respuesta correcta es 3.14. Pi (π) es aproximadamente 3.14159... y representa la relación entre la circunferencia y el diámetro de un círculo."
+                },
+                { 
+                    question: "¿Cuánto es 2⁸?", 
+                    answers: ["128", "256", "512", "64"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 💻 2⁸ = 256. Este número es importante en informática porque representa los valores posibles de un byte (2⁸ = 256 valores).",
+                    explanationWrong: "La respuesta correcta es 256. 2⁸ = 2×2×2×2×2×2×2×2 = 256. Es importante en informática porque un byte tiene 256 valores posibles."
+                }
+            ],
+            geografia: [
+                { 
+                    question: "¿Cuál es el río más largo del mundo?", 
+                    answers: ["Nilo", "Amazonas", "Misisipi", "Yangtsé"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 🌊 El Amazonas es considerado el río más largo del mundo con aproximadamente 7,062 km, aunque hay debate con el Nilo.",
+                    explanationWrong: "La respuesta correcta es el Amazonas. Con aproximadamente 7,062 km, es considerado el río más largo del mundo, aunque algunos estudios debaten si es el Nilo."
+                },
+                { 
+                    question: "¿Cuál es el país más grande del mundo?", 
+                    answers: ["China", "Canadá", "Rusia", "EE.UU."], 
+                    correct: 2,
+                    explanationCorrect: "¡Excelente! 🇷🇺 Rusia es el país más grande del mundo con 17.1 millones de km², cubriendo once zonas horarias diferentes.",
+                    explanationWrong: "La respuesta correcta es Rusia. Con 17.1 millones de km², es el país más grande del mundo, extendiéndose por once zonas horarias."
+                },
+                { 
+                    question: "¿En qué continente está Egipto?", 
+                    answers: ["Asia", "África", "Europa", "Oceanía"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 🌍 Egipto está ubicado en el noreste de África, aunque la península del Sinaí se extiende hacia Asia.",
+                    explanationWrong: "La respuesta correcta es África. Egipto está en el noreste de África, aunque una pequeña parte (la península del Sinaí) está en Asia."
+                },
+                { 
+                    question: "¿Cuál es la capital de Australia?", 
+                    answers: ["Sídney", "Melbourne", "Canberra", "Brisbane"], 
+                    correct: 2,
+                    explanationCorrect: "¡Muy bien! 🏛️ Canberra es la capital de Australia, no Sídney como muchos creen. Fue elegida como compromiso entre Sídney y Melbourne.",
+                    explanationWrong: "La respuesta correcta es Canberra. Muchos piensan que es Sídney, pero Canberra fue elegida como capital en 1908 como compromiso entre Sídney y Melbourne."
+                },
+                { 
+                    question: "¿Cuál es el océano más grande?", 
+                    answers: ["Atlántico", "Índico", "Ártico", "Pacífico"], 
+                    correct: 3,
+                    explanationCorrect: "¡Correcto! 🌊 El Océano Pacífico es el más grande, cubriendo más de 165 millones de km², que es más área que toda la tierra firme junta.",
+                    explanationWrong: "La respuesta correcta es el Pacífico. Es el océano más grande, cubriendo más de 165 millones de km², más área que toda la tierra firme combinada."
+                }
+            ],
+            cultura: [
+                { 
+                    question: "¿Cuántos jugadores tiene un equipo de fútbol?", 
+                    answers: ["9", "10", "11", "12"], 
+                    correct: 2,
+                    explanationCorrect: "¡Correcto! ⚽ Un equipo de fútbol tiene 11 jugadores en el campo, incluyendo al portero.",
+                    explanationWrong: "La respuesta correcta es 11 jugadores. Cada equipo de fútbol tiene 11 jugadores en el campo, incluyendo al portero."
+                },
+                { 
+                    question: "¿Cuántas cuerdas tiene una guitarra estándar?", 
+                    answers: ["4", "5", "6", "7"], 
+                    correct: 2,
+                    explanationCorrect: "¡Excelente! 🎸 Una guitarra estándar tiene 6 cuerdas, afinadas generalmente en Mi, La, Re, Sol, Si y Mi.",
+                    explanationWrong: "La respuesta correcta es 6 cuerdas. Una guitarra estándar tiene 6 cuerdas afinadas en Mi, La, Re, Sol, Si y Mi."
+                },
+                { 
+                    question: "¿Qué instrumento tocaba Beethoven?", 
+                    answers: ["Violín", "Piano", "Flauta", "Guitarra"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 🎹 Beethoven era un virtuoso del piano. Compuso muchas de sus obras más famosas para este instrumento, incluso después de quedarse sordo.",
+                    explanationWrong: "La respuesta correcta es el Piano. Beethoven era un virtuoso pianista y compuso numerosas obras para piano, incluso después de perder la audición."
+                },
+                { 
+                    question: "¿Cuántos colores tiene el arcoíris?", 
+                    answers: ["5", "6", "7", "8"], 
+                    correct: 2,
+                    explanationCorrect: "¡Muy bien! 🌈 El arcoíris tiene 7 colores: rojo, naranja, amarillo, verde, azul, añil y violeta. Newton los clasificó así.",
+                    explanationWrong: "La respuesta correcta es 7 colores: rojo, naranja, amarillo, verde, azul, añil y violeta. Isaac Newton fue quien los clasificó así."
+                },
+                { 
+                    question: "¿Quién escribió Don Quijote?", 
+                    answers: ["Lope de Vega", "Cervantes", "Quevedo", "Góngora"], 
+                    correct: 1,
+                    explanationCorrect: "¡Correcto! 📚 Miguel de Cervantes Saavedra escribió 'Don Quijote de la Mancha', publicada en 1605. Es considerada la primera novela moderna.",
+                    explanationWrong: "La respuesta correcta es Cervantes. Miguel de Cervantes escribió 'Don Quijote de la Mancha' en 1605, considerada la primera novela moderna de la literatura universal."
+                }
+            ]
+        };
+
+        // ==================== SCREEN MANAGEMENT ====================
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function switchEditorTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('editor-preset').style.display = tab === 'preset' ? 'block' : 'none';
+            document.getElementById('editor-custom').style.display = tab === 'custom' ? 'block' : 'none';
+            if (tab === 'custom' && document.getElementById('custom-questions-list').children.length === 0) {
+                addQuestionEditor();
+            }
+        }
+
+        // ==================== CUSTOM QUESTION EDITOR ====================
+        let customQuestions = [];
+        let editorCounter = 0;
+
+        function addQuestionEditor() {
+            const id = editorCounter++;
+            const div = document.createElement('div');
+            div.className = 'question-editor';
+            div.id = `editor-q-${id}`;
+            div.innerHTML = `
+                <textarea placeholder="Escribe tu pregunta..." id="q-text-${id}"></textarea>
+                <div class="answer-inputs">
+                    <input type="text" placeholder="Respuesta A (rojo)" id="q-a-${id}-0" style="border-color: #e74c3c;">
+                    <input type="text" placeholder="Respuesta B (azul)" id="q-a-${id}-1" style="border-color: #3498db;">
+                    <input type="text" placeholder="Respuesta C (amarillo)" id="q-a-${id}-2" style="border-color: #f39c12;">
+                    <input type="text" placeholder="Respuesta D (verde)" id="q-a-${id}-3" style="border-color: #27ae60;">
+                </div>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:10px;">Selecciona la respuesta correcta:</p>
+                <div class="correct-selector">
+                    <button class="correct-btn" onclick="selectCorrect(${id}, 0)" id="correct-${id}-0">A</button>
+                    <button class="correct-btn" onclick="selectCorrect(${id}, 1)" id="correct-${id}-1">B</button>
+                    <button class="correct-btn" onclick="selectCorrect(${id}, 2)" id="correct-${id}-2">C</button>
+                    <button class="correct-btn" onclick="selectCorrect(${id}, 3)" id="correct-${id}-3">D</button>
+                </div>
+                <div class="explanation-inputs">
+                    <textarea placeholder="Explicación si responde CORRECTAMENTE..." id="q-exp-correct-${id}" style="border-color: #6bcb77;"></textarea>
+                    <textarea placeholder="Explicación si responde INCORRECTAMENTE..." id="q-exp-wrong-${id}" style="border-color: #ff6b6b;"></textarea>
+                </div>
+                <button class="btn btn-small" style="background:rgba(255,107,107,0.3); color:#ff6b6b; margin-top:10px;" onclick="removeQuestionEditor(${id})">🗑️ Eliminar</button>
+            `;
+            document.getElementById('custom-questions-list').appendChild(div);
+        }
+
+        function removeQuestionEditor(id) {
+            const el = document.getElementById(`editor-q-${id}`);
+            if (el) el.remove();
+        }
+
+        function selectCorrect(qId, ansIdx) {
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`correct-${qId}-${i}`).classList.remove('selected');
+            }
+            document.getElementById(`correct-${qId}-${ansIdx}`).classList.add('selected');
+        }
+
+        function collectCustomQuestions() {
+            const editors = document.querySelectorAll('.question-editor');
+            const questions = [];
+            editors.forEach(editor => {
+                const id = editor.id.split('-')[2];
+                const text = document.getElementById(`q-text-${id}`).value.trim();
+                const answers = [0,1,2,3].map(i => document.getElementById(`q-a-${id}-${i}`).value.trim());
+                const correctBtn = editor.querySelector('.correct-btn.selected');
+                const expCorrect = document.getElementById(`q-exp-correct-${id}`).value.trim();
+                const expWrong = document.getElementById(`q-exp-wrong-${id}`).value.trim();
+                let correct = -1;
+                if (correctBtn) {
+                    correct = parseInt(correctBtn.id.split('-')[2]);
+                }
+                if (text && answers.every(a => a) && correct >= 0) {
+                    questions.push({ 
+                        question: text, 
+                        answers, 
+                        correct,
+                        explanationCorrect: expCorrect || "¡Correcto! Bien hecho.",
+                        explanationWrong: expWrong || `La respuesta correcta era: ${answers[correct]}.`
+                    });
+                }
+            });
+            return questions;
+        }
+
+        // ==================== GAME LOGIC ====================
+        function loadPreset(topic) {
+            gameState.questions = [...presetQuestions[topic]];
+            gameState.questions = shuffleArray(gameState.questions).slice(0, 5);
+            document.querySelectorAll('#editor-preset .btn').forEach(b => {
+                b.style.opacity = '0.5';
+                b.style.border = '2px solid transparent';
+            });
+            event.target.style.opacity = '1';
+            event.target.style.border = '2px solid #6bcb77';
+        }
+
+        function startGame() {
+            const customTab = document.getElementById('editor-custom').style.display !== 'none';
+            if (customTab) {
+                const custom = collectCustomQuestions();
+                if (custom.length > 0) {
+                    gameState.questions = custom;
+                }
+            }
+
+            if (gameState.questions.length === 0) {
+                alert('⚠️ Selecciona un tema o crea al menos una pregunta.');
+                return;
+            }
+
+            gameState.roomCode = generateRoomCode();
+            gameState.host = true;
+            gameState.currentQuestion = 0;
+            gameState.players = {};
+            gameState.scores = {};
+
+            localStorage.setItem(`quizlive_room_${gameState.roomCode}`, JSON.stringify({
+                active: true,
+                timestamp: Date.now()
+            }));
+
+            showScreen('screen-host-waiting');
+            document.getElementById('room-code-display').textContent = gameState.roomCode;
+            updatePlayerCount();
+            
+            // Generate QR code
+            setTimeout(generateQR, 300);
+        }
+
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 5; i++) {
+                code += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return code;
+        }
+
+        function joinGame() {
+            const code = document.getElementById('join-code-input').value.trim().toUpperCase();
+            const name = document.getElementById('join-name-input').value.trim();
+            const errorEl = document.getElementById('join-error');
+
+            if (!code || !name) {
+                errorEl.textContent = '⚠️ Ingresa el código y tu nombre.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const roomData = localStorage.getItem(`quizlive_room_${code}`);
+            if (!roomData) {
+                errorEl.textContent = '❌ Código no encontrado. Verifica e intenta de nuevo.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const room = JSON.parse(roomData);
+            if (!room.active) {
+                errorEl.textContent = '❌ Esta sala ya no está activa.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            gameState.roomCode = code;
+            gameState.playerName = name;
+            gameState.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            gameState.host = false;
+            gameState.answered = false;
+
+            sendMessage({
+                type: 'player_join',
+                roomCode: code,
+                playerId: gameState.playerId,
+                playerName: name
+            });
+
+            showScreen('screen-player-waiting');
+            document.getElementById('player-welcome').textContent = `¡Hola, ${name}! 🎉`;
+        }
+
+        function startQuestions() {
+            if (Object.keys(gameState.players).length === 0) {
+                if (!confirm('⚠️ No hay jugadores aún. ¿Iniciar solo?')) return;
+            }
+            gameState.currentQuestion = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = gameState.questions[gameState.currentQuestion];
+            if (!q) {
+                showFinalResults();
+                return;
+            }
+
+            gameState.timeLeft = 20;
+            gameState.answered = false;
+
+            if (gameState.host) {
+                showScreen('screen-host-question');
+                document.getElementById('host-question-text').textContent = q.question;
+                document.getElementById('question-counter').textContent = `Pregunta ${gameState.currentQuestion + 1} de ${gameState.questions.length}`;
+                document.getElementById('progress-fill').style.width = `${((gameState.currentQuestion) / gameState.questions.length) * 100}%`;
+                updatePlayerCount();
+
+                const grid = document.getElementById('host-answers-grid');
+                const colors = ['red', 'blue', 'yellow', 'green'];
+                grid.innerHTML = q.answers.map((a, i) => `
+                    <div class="answer-card ${colors[i]}" id="host-answer-${i}">
+                        <span>${a}</span>
+                        <span class="answer-count" id="answer-count-${i}">0</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('answer-status').textContent = 'Esperando respuestas...';
+                document.getElementById('timer-display').textContent = gameState.timeLeft;
+                document.getElementById('timer-display').classList.remove('warning');
+
+                gameState.answerCounts = [0, 0, 0, 0];
+
+                startTimer();
+            } else {
+                showScreen('screen-player-question');
+                document.getElementById('player-question-text').textContent = q.question;
+                document.getElementById('player-question-counter').textContent = `Pregunta ${gameState.currentQuestion + 1} de ${gameState.questions.length}`;
+                document.getElementById('player-progress-fill').style.width = `${((gameState.currentQuestion) / gameState.questions.length) * 100}%`;
+                document.getElementById('player-timer').textContent = gameState.timeLeft;
+                document.getElementById('player-timer').classList.remove('warning');
+
+                const grid = document.getElementById('player-answer-grid');
+                const colors = ['red', 'blue', 'yellow', 'green'];
+                grid.innerHTML = q.answers.map((a, i) => `
+                    <button class="player-answer-btn ${colors[i]}" onclick="playerAnswer(${i})" id="player-btn-${i}">
+                        ${a}
+                    </button>
+                `).join('');
+
+                gameState.answered = false;
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                
+                if (gameState.host) {
+                    document.getElementById('timer-display').textContent = gameState.timeLeft;
+                    if (gameState.timeLeft <= 5) {
+                        document.getElementById('timer-display').classList.add('warning');
+                    }
+                } else {
+                    document.getElementById('player-timer').textContent = gameState.timeLeft;
+                    if (gameState.timeLeft <= 5) {
+                        document.getElementById('player-timer').classList.add('warning');
+                    }
+                }
+
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    if (gameState.host) {
+                        endQuestion();
+                    }
+                }
+            }, 1000);
+        }
+
+        function playerAnswer(answerIndex) {
+            if (gameState.answered) return;
+            gameState.answered = true;
+
+            document.querySelectorAll('.player-answer-btn').forEach(btn => btn.disabled = true);
+            document.getElementById(`player-btn-${answerIndex}`).classList.add('selected');
+
+            sendMessage({
+                type: 'player_answer',
+                roomCode: gameState.roomCode,
+                playerId: gameState.playerId,
+                answer: answerIndex,
+                timeLeft: gameState.timeLeft
+            });
+        }
+
+        function endQuestion() {
+            clearInterval(gameState.timerInterval);
+            const q = gameState.questions[gameState.currentQuestion];
+
+            if (gameState.host) {
+                const colors = ['red', 'blue', 'yellow', 'green'];
+                for (let i = 0; i < 4; i++) {
+                    const card = document.getElementById(`host-answer-${i}`);
+                    if (i === q.correct) {
+                        card.classList.add('correct');
+                    } else {
+                        card.classList.add('wrong');
+                    }
+                }
+
+                document.getElementById('answer-status').textContent = '¡Tiempo! Mostrando resultados...';
+
+                setTimeout(() => {
+                    calculateScores();
+                    showQuestionResults();
+                }, 2000);
+            }
+        }
+
+        function calculateScores() {
+            const q = gameState.questions[gameState.currentQuestion];
+            
+            Object.keys(gameState.players).forEach(pid => {
+                const player = gameState.players[pid];
+                if (player.lastAnswer !== undefined) {
+                    if (player.lastAnswer === q.correct) {
+                        const points = Math.max(100, Math.round(500 * (player.answerTime / 20)));
+                        gameState.scores[pid] = (gameState.scores[pid] || 0) + points;
+                        player.lastPoints = points;
+                        player.lastCorrect = true;
+                    } else {
+                        player.lastPoints = 0;
+                        player.lastCorrect = false;
+                    }
+                } else {
+                    player.lastPoints = 0;
+                    player.lastCorrect = false;
+                }
+            });
+
+            Object.keys(gameState.players).forEach(pid => {
+                sendMessage({
+                    type: 'question_result',
+                    roomCode: gameState.roomCode,
+                    playerId: pid,
+                    correct: gameState.players[pid].lastCorrect,
+                    points: gameState.players[pid].lastPoints,
+                    score: gameState.scores[pid] || 0,
+                    explanationCorrect: q.explanationCorrect,
+                    explanationWrong: q.explanationWrong
+                });
+            });
+        }
+
+        function showQuestionResults() {
+            if (!gameState.host) return;
+
+            showScreen('screen-host-results');
+            document.getElementById('results-title').textContent = `📊 Resultado Pregunta ${gameState.currentQuestion + 1}`;
+
+            const sorted = Object.keys(gameState.scores)
+                .map(pid => ({ name: gameState.players[pid].name, score: gameState.scores[pid] }))
+                .sort((a, b) => b.score - a.score);
+
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = sorted.map((p, i) => `
+                <div class="leaderboard-item" style="animation-delay: ${i * 0.1}s">
+                    <div class="rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1)}</div>
+                    <div class="player-name-lb">${p.name}</div>
+                    <div class="player-score-lb">${p.score} pts</div>
+                </div>
+            `).join('');
+
+            if (sorted.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.5);">Sin jugadores aún</p>';
+            }
+
+            const isLast = gameState.currentQuestion >= gameState.questions.length - 1;
+            document.getElementById('btn-next').textContent = isLast ? '🏆 Ver Resultados Finales' : 'Siguiente Pregunta →';
+        }
+
+        function nextQuestion() {
+            gameState.currentQuestion++;
+            if (gameState.currentQuestion >= gameState.questions.length) {
+                showFinalResults();
+            } else {
+                Object.keys(gameState.players).forEach(pid => {
+                    gameState.players[pid].lastAnswer = undefined;
+                });
+                showQuestion();
+            }
+        }
+
+        function showFinalResults() {
+            if (gameState.host) {
+                showScreen('screen-host-final');
+                const sorted = Object.keys(gameState.scores)
+                    .map(pid => ({ name: gameState.players[pid].name, score: gameState.scores[pid] }))
+                    .sort((a, b) => b.score - a.score);
+
+                const list = document.getElementById('final-leaderboard');
+                list.innerHTML = sorted.map((p, i) => `
+                    <div class="leaderboard-item" style="animation-delay: ${i * 0.15}s">
+                        <div class="rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1)}</div>
+                        <div class="player-name-lb">${p.name}</div>
+                        <div class="player-score-lb">${p.score} pts</div>
+                    </div>
+                `).join('');
+
+                if (sorted.length > 0) {
+                    launchConfetti();
+                }
+
+                sendMessage({
+                    type: 'game_over',
+                    roomCode: gameState.roomCode
+                });
+
+                localStorage.removeItem(`quizlive_room_${gameState.roomCode}`);
+            }
+        }
+
+        function resetGame() {
+            clearInterval(gameState.timerInterval);
+            gameState.currentQuestion = 0;
+            gameState.scores = {};
+            gameState.players = {};
+            gameState.roomCode = '';
+            showScreen('screen-main');
+        }
+
+        function updatePlayerCount() {
+            const count = Object.keys(gameState.players).length;
+            const el = document.getElementById('player-count-waiting') || document.getElementById('player-count-game');
+            if (el) el.textContent = `👥 ${count} jugador${count !== 1 ? 'es' : ''}`;
+        }
+
+        function updateWaitingPlayers() {
+            const list = document.getElementById('waiting-players-list');
+            const names = Object.values(gameState.players).map(p => p.name);
+            list.innerHTML = names.map(n => `<div class="player-chip">${n}</div>`).join('');
+            updatePlayerCount();
+        }
+
+        // ==================== CHANNEL MESSAGE HANDLER ====================
+        function handleChannelMessage(event) {
+            const msg = event.data;
+            if (!msg) return;
+
+            if (msg.roomCode !== gameState.roomCode && msg.type !== 'player_join') return;
+
+            switch (msg.type) {
+                case 'player_join':
+                    if (gameState.host && msg.roomCode === gameState.roomCode) {
+                        gameState.players[msg.playerId] = {
+                            name: msg.playerName,
+                            lastAnswer: undefined,
+                            answerTime: 0,
+                            lastCorrect: false,
+                            lastPoints: 0
+                        };
+                        gameState.scores[msg.playerId] = 0;
+                        updateWaitingPlayers();
+                        
+                        sendMessage({
+                            type: 'join_confirmed',
+                            roomCode: gameState.roomCode,
+                            playerId: msg.playerId
+                        });
+                    }
+                    break;
+
+                case 'join_confirmed':
+                    if (!gameState.host && msg.playerId === gameState.playerId) {
+                        console.log('Joined successfully!');
+                    }
+                    break;
+
+                case 'player_answer':
+                    if (gameState.host && msg.roomCode === gameState.roomCode) {
+                        if (gameState.players[msg.playerId]) {
+                            gameState.players[msg.playerId].lastAnswer = msg.answer;
+                            gameState.players[msg.playerId].answerTime = msg.timeLeft;
+                            
+                            if (gameState.answerCounts) {
+                                gameState.answerCounts[msg.answer]++;
+                                const countEl = document.getElementById(`answer-count-${msg.answer}`);
+                                if (countEl) countEl.textContent = gameState.answerCounts[msg.answer];
+                            }
+                        }
+                    }
+                    break;
+
+                case 'question_result':
+                    if (!gameState.host && msg.playerId === gameState.playerId) {
+                        clearInterval(gameState.timerInterval);
+                        showScreen('screen-player-result');
+                        const feedback = document.getElementById('player-result-feedback');
+                        const explanationEl = document.getElementById('player-explanation');
+                        
+                        if (msg.correct) {
+                            feedback.innerHTML = `
+                                <div class="emoji">✅</div>
+                                <div class="text">¡Correcto!</div>
+                                <div class="points">+${msg.points} pts</div>
+                                <div class="explanation">${msg.explanationCorrect}</div>
+                            `;
+                        } else {
+                            feedback.innerHTML = `
+                                <div class="emoji">❌</div>
+                                <div class="text">Incorrecto</div>
+                                <div class="points" style="color:#ff6b6b;">0 pts</div>
+                                <div class="explanation">${msg.explanationWrong}</div>
+                            `;
+                        }
+                    }
+                    break;
+
+                case 'game_over':
+                    if (!gameState.host && msg.roomCode === gameState.roomCode) {
+                        clearInterval(gameState.timerInterval);
+                        showScreen('screen-player-final');
+                        document.getElementById('player-final-score').textContent = `${gameState.scores[gameState.playerId] || 0} pts`;
+                        document.getElementById('player-final-emoji').textContent = '🎉';
+                        document.getElementById('player-final-text').textContent = '¡Juego Terminado!';
+                        document.getElementById('player-final-rank').textContent = '¡Gracias por jugar!';
+                    }
+                    break;
+
+                case 'game_start':
+                    if (!gameState.host && msg.roomCode === gameState.roomCode) {
+                        showQuestion();
+                    }
+                    break;
+
+                case 'next_question':
+                    if (!gameState.host && msg.roomCode === gameState.roomCode) {
+                        gameState.answered = false;
+                        showQuestion();
+                    }
+                    break;
+            }
+        }
+
+        const originalShowQuestion = showQuestion;
+        showQuestion = function() {
+            originalShowQuestion();
+            if (gameState.host) {
+                if (gameState.currentQuestion === 0) {
+                    sendMessage({ type: 'game_start', roomCode: gameState.roomCode });
+                } else {
+                    sendMessage({ type: 'next_question', roomCode: gameState.roomCode });
+                }
+            }
+        };
+
+        // ==================== CONFETTI ====================
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#e74c3c', '#9b59b6'];
+            
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    container.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        // ==================== QR CODE GENERATION ====================
+        function generateQR() {
+            const canvas = document.getElementById('qr-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, 200, 200);
+            
+            // Generate QR using QRCode library
+            try {
+                const qrDiv = document.createElement('div');
+                new QRCode(qrDiv, {
+                    text: window.location.href,
+                    width: 180,
+                    height: 180,
                     colorDark: '#1a0533',
                     colorLight: '#ffffff',
                     correctLevel: QRCode.CorrectLevel.H
                 });
+                
+                // Wait for QR to be generated
+                setTimeout(() => {
+                    const qrCanvas = qrDiv.querySelector('canvas');
+                    if (qrCanvas) {
+                        ctx.drawImage(qrCanvas, 10, 10, 180, 180);
+                    } else {
+                        // Fallback: draw a simple representation
+                        drawSimpleQR(ctx);
+                    }
+                }, 100);
             } catch(e) {
-                // Fallback: create a simple QR representation
-                container.innerHTML = `
-                    <div style="text-align:center; padding:20px;">
-                        <p style="color:#1a0533; font-weight:600; margin-bottom:10px;">QR Code</p>
-                        <p style="color:#666; font-size:0.9rem;">URL: ${url.substring(0, 40)}...</p>
-                        <p style="color:#999; font-size:0.8rem; margin-top:10px;">
-                            Usa qr-code-generator.com<br>para crear tu QR personalizado
-                        </p>
-                    </div>
-                `;
+                drawSimpleQR(ctx);
             }
         }
 
-        function downloadQR() {
-            const canvas = document.querySelector('#qr-container canvas');
-            if (canvas) {
-                const link = document.createElement('a');
-                link.download = 'quizlive-qr.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            } else {
-                alert('Primero genera el código QR haciendo clic en "Generar Código QR"');
-            }
+        function drawSimpleQR(ctx) {
+            ctx.fillStyle = '#1a0533';
+            ctx.font = '14px Poppins';
+            ctx.textAlign = 'center';
+            ctx.fillText('Código:', 100, 30);
+            ctx.font = 'bold 24px Poppins';
+            ctx.fillText(gameState.roomCode || 'XXXXX', 100, 70);
+            ctx.font = '12px Poppins';
+            ctx.fillStyle = '#666';
+            ctx.fillText('Ingresa este código en', 100, 110);
+            ctx.fillText('la app para unirte', 100, 130);
         }
 
-        // Auto-generate QR on load
-        window.addEventListener('load', () => {
-            setTimeout(generateQR, 500);
-        });
+        // ==================== UTILITIES ====================
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Demo mode
+        function addDemoPlayers() {
+            const demoNames = ['Ana', 'Carlos', 'María', 'Pedro', 'Lucía'];
+            demoNames.forEach((name, i) => {
+                const pid = `demo_${i}`;
+                gameState.players[pid] = {
+                    name: name,
+                    lastAnswer: undefined,
+                    answerTime: 0,
+                    lastCorrect: false,
+                    lastPoints: 0
+                };
+                gameState.scores[pid] = 0;
+            });
+            updateWaitingPlayers();
+        }
+
+        let demoTimeout;
+        function scheduleDemoPlayers() {
+            demoTimeout = setTimeout(() => {
+                if (gameState.host && Object.keys(gameState.players).length === 0) {
+                    const waitingEl = document.getElementById('waiting-players-list');
+                    if (waitingEl && waitingEl.children.length === 0) {
+                        const note = document.createElement('p');
+                        note.style.cssText = 'color:rgba(255,255,255,0.5); font-size:0.85rem; width:100%; text-align:center;';
+                        note.textContent = '💡 Abre otra pestaña para unirte como alumno, o presiona el botón de abajo para agregar jugadores de prueba';
+                        waitingEl.parentElement.insertBefore(note, waitingEl.nextSibling);
+                        
+                        const demoBtn = document.createElement('button');
+                        demoBtn.className = 'btn btn-small';
+                        demoBtn.style.cssText = 'background:rgba(255,255,255,0.1); color:white; margin-top:10px;';
+                        demoBtn.textContent = '🎭 Agregar Jugadores de Prueba';
+                        demoBtn.onclick = () => { addDemoPlayers(); demoBtn.remove(); note.remove(); };
+                        waitingEl.parentElement.appendChild(demoBtn);
+                    }
+                }
+            }, 3000);
+        }
+
+        const origStartGame = startGame;
+        startGame = function() {
+            origStartGame();
+            scheduleDemoPlayers();
+        };
+
+        const origEndQuestion2 = endQuestion;
+        endQuestion = function() {
+            Object.keys(gameState.players).forEach(pid => {
+                if (gameState.players[pid].lastAnswer === undefined && pid.startsWith('demo_')) {
+                    const q = gameState.questions[gameState.currentQuestion];
+                    if (Math.random() < 0.6) {
+                        gameState.players[pid].lastAnswer = q.correct;
+                    } else {
+                        let wrong;
+                        do { wrong = Math.floor(Math.random() * 4); } while (wrong === q.correct);
+                        gameState.players[pid].lastAnswer = wrong;
+                    }
+                    gameState.players[pid].answerTime = Math.floor(Math.random() * 15) + 3;
+                    
+                    if (gameState.answerCounts) {
+                        gameState.answerCounts[gameState.players[pid].lastAnswer]++;
+                        const countEl = document.getElementById(`answer-count-${gameState.players[pid].lastAnswer}`);
+                        if (countEl) countEl.textContent = gameState.answerCounts[gameState.players[pid].lastAnswer];
+                    }
+                }
+            });
+            origEndQuestion2();
+        };
+
+        // Clean up old rooms
+        (function cleanup() {
+            const keys = Object.keys(localStorage).filter(k => k.startsWith('quizlive_room_'));
+            keys.forEach(k => {
+                try {
+                    const data = JSON.parse(localStorage.getItem(k));
+                    if (Date.now() - data.timestamp > 3600000) {
+                        localStorage.removeItem(k);
+                    }
+                } catch(e) {
+                    localStorage.removeItem(k);
+                }
+            });
+        })();
     </script>
 </body>
 </html>
