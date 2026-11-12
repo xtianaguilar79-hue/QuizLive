@@ -54,22 +54,22 @@ agregarTema("tema1", "📋 Licencia y Plazos", [
     question: "¿Un trabajador lesionado en la vía pública por su propia negligencia (ej. cruzar distraído mirando el celular) pierde el derecho a la licencia paga por enfermedad inculpable (Art. 208 LCT)?",
     answers: [
       "Sí, la negligencia grave del trabajador extingue la obligación patronal de pago.",
-      "No, el régimen cubre imprudencia o negligencia (culpa grave); el único límite legal es el dolo.",
       "Sí, salvo que el accidente ocurra estrictamente durante la jornada de trabajo.",
+      "No, el régimen cubre imprudencia o negligencia (culpa grave); el único límite legal es el dolo.",
       "No, pero la ley reduce automáticamente su remuneración al 50% durante el reposo."
     ],
-    correct: 1,
+    correct: 2,
     fundamento: "El régimen de enfermedades inculpables responde incluso ante culpa o culpa grave del trabajador (imprudencia o negligencia). El derecho a cobro únicamente cesa si se prueba dolo (provocación intencional de la lesión o fraude)."
   },
   {
     question: "Un empleado con 4 años y 11 meses de antigüedad cae enfermo por un tratamiento de 3 meses. Durante el transcurso de la licencia cumple los 5 años en la empresa. ¿Cuál es su tope máximo de licencia paga (sin cargas de familia)?",
     answers: [
       "3 meses, porque la antigüedad se congela de forma inamovible al inicio del hecho generador.",
-      "6 meses, pues la remuneración se devenga día a día y al superar los 5 años se amplía el tope legal.",
+      "Pierde la licencia paga de inmediato debiendo pasar a reserva de puesto.",
       "12 meses, por aplicación directa del principio de la duda más favorable al trabajador.",
-      "Pierde la licencia paga de inmediato debiendo pasar a reserva de puesto."
+      "6 meses, pues la remuneración se devenga día a día y al superar los 5 años se amplía el tope legal."
     ],
-    correct: 1,
+    correct: 3,
     fundamento: "Como la licencia se devenga día a día, si el trabajador alcanza los 5 años de antigüedad durante su transcurso, el plazo máximo legal se amplía de 3 a 6 meses de conformidad con el Art. 208 LCT y los principios de equidad y favorabilidad."
   },
   {
@@ -87,22 +87,22 @@ agregarTema("tema1", "📋 Licencia y Plazos", [
     question: "¿Qué ocurre con el plazo máximo de licencia paga si un trabajador sufre dos accidentes inculpables totalmente distintos e independientes con un mes de diferencia?",
     answers: [
       "Se agotan y acumulan dentro del mismo tope anual único prefijado por el empleador.",
-      "Se reinicia el cómputo del plazo máximo por tratarse de afecciones totalmente independientes.",
       "Pasa automáticamente a la reserva de puesto de trabajo sin goce de sueldo por 1 año.",
+      "Se reinicia el cómputo del plazo máximo por tratarse de afecciones totalmente independientes.",
       "El segundo evento debe ser derivado y cubierto obligatoriamente por la ART."
     ],
-    correct: 1,
+    correct: 2,
     fundamento: "El tope del Art. 208 LCT (3, 6 u 12 meses) se otorga por 'cada enfermedad o accidente'. Si ocurre un nuevo evento independiente y no relacionado, se reinicia un nuevo período máximo de licencia paga."
   },
   {
     question: "En el caso de recidivas de enfermedades crónicas, ¿cuándo se reinicia el plazo máximo de licencia remunerada según el Art. 208 LCT?",
     answers: [
       "A los 6 meses exactos contados desde el primer diagnóstico médico.",
+      "Transcurridos 2 años desde el alta médica",
       "Transcurridos 2 años desde la manifestación de la patología.",
-      "Se reinicia de forma automática cada 1° de enero del año calendario.",
       "Nunca; las patologías crónicas solo otorgan un único plazo en toda la vida laboral."
     ],
-    correct: 1,
+    correct: 2,
     fundamento: "Las recaídas o recidivas de una misma enfermedad crónica no se consideran una nueva enfermedad, salvo que se manifiesten transcurridos 2 años desde la manifestación previa (Art. 208 LCT)."
   }
 ]);
@@ -113,12 +113,12 @@ agregarTema("tema2", "📝 Avisos y Certificados", [
   {
     question: "Bajo el Artículo 209 de la LCT, ¿en qué plazo debe el trabajador notificar su enfermedad o accidente e indicar el lugar exacto en que se encuentra?",
     answers: [
-      "Dentro de las 48 horas posteriores a la presentación del primer síntoma.",
       "En el transcurso de la primera jornada de trabajo respecto de la cual esté imposibilitado de concurrir.",
+      "Dentro de las 48 horas posteriores a la presentación del primer síntoma.",
       "Al finalizar la semana laboral en la que se produjeron las inasistencias.",
       "En el momento en que se emita el certificado médico definitivo por el profesional."
     ],
-    correct: 1,
+    correct: 0,
     fundamento: "El Art. 209 exige dar aviso en la primera jornada de trabajo a la que no pueda asistir, informando el lugar de reposo para permitir el control médico patronal (Art. 210)."
   },
   {
@@ -136,22 +136,22 @@ agregarTema("tema2", "📝 Avisos y Certificados", [
     question: "Si un trabajador sufre una enfermedad inculpable durante sus vacaciones anuales y notifica fehacientemente al empleador en tiempo y forma, ¿qué sucede?",
     answers: [
       "Las vacaciones continúan transcurriendo normalmente hasta consumirse por completo.",
-      "Se interrumpen las vacaciones, cobrando licencia por enfermedad y reservando los días no gozados.",
       "Se extinguen definitivamente los días de vacaciones que restaban por gozar.",
+      "Se interrumpen las vacaciones, cobrando licencia por enfermedad y reservando los días no gozados.",
       "El contrato se rescinde inmediatamente por imposibilidad objetiva de cumplimiento."
     ],
-    correct: 1,
+    correct: 2,
     fundamento: "El aviso oportuno por enfermedad durante el receso interrumpe las vacaciones. El trabajador pasa a cobrar la licencia paga del Art. 208 y conserva los días de vacaciones pendientes para reprogramarlos (Art. 154 LCT)."
   },
   {
     question: "Si existe discrepancia entre el médico del trabajador y el médico de control del empleador (Art. 210 LCT), ¿es obligatoria la junta médica?",
     answers: [
       "Sí, es un trámite administrativo obligatorio previo a cualquier reclamo judicial.",
-      "No; la ley indica que 'se podrá recurrir', siendo un medio probatorio optativo sujeto a la sana crítica judicial.",
+      "No; la opinión del médico de la empresa prevalece automáticamente sin excepción.",
       "Sí, y el dictamen resultante es vinculante e inimpugnable para el juez laboral.",
-      "No; la opinión del médico de la empresa prevalece automáticamente sin excepción."
+      "No; la ley indica que 'se podrá recurrir', siendo un medio probatorio optativo sujeto a la sana crítica judicial."
     ],
-    correct: 1,
+    correct: 3,
     fundamento: "La norma modificada por la Ley 27.802 establece que ante discrepancia 'se podrá recurrir' a junta médica o dictamen institucional. Es optativo y su resultado es una prueba más a evaluar por el juez."
   },
   {
@@ -160,7 +160,7 @@ agregarTema("tema2", "📝 Avisos y Certificados", [
       "Firma digital emitida a través de plataformas electrónicas autorizadas (Ley 27.553).",
       "Inclusión explícita del diagnóstico médico, tratamiento y días de reposo indicados.",
       "Homologación y visado previo obligatorio por la SRT y el Ministerio de Trabajo.",
-      "Emisión por profesional médico habilitado en el territorio nacional."
+      "Emisión por profesional médico habilitado para el ejercicio de la medicina en el territorio nacional."
     ],
     correct: 2,
     fundamento: "La Ley 27.802 exige diagnóstico, tratamiento, días de reposo, firma digital (Ley 27.553) y médico habilitado. NO exige visado ni homologación del Ministerio de Trabajo o SRT."
@@ -174,22 +174,22 @@ agregarTema("tema3", "🏥 Reserva e Incapacidad", [
     question: "Bajo la Ley de Protección de Datos Personales (Ley 25.326), ¿está el trabajador obligado a detallar su diagnóstico médico en el telegrama de aviso laboral?",
     answers: [
       "Sí, la omisión del diagnóstico en el telegrama invalida jurídicamente la notificación.",
-      "No; el diagnóstico es un dato sensible resguardado por el secreto profesional ante el médico de control.",
       "Solo si la empresa cuenta con un plantel superior a 100 empleados registrados.",
+      "No; el diagnóstico es un dato sensible resguardado por el secreto profesional ante el médico de control.",
       "Sí, salvo que se trate de afecciones respiratorias o virales menores."
     ],
-    correct: 1,
+    correct: 2,
     fundamento: "Los datos de salud son 'datos sensibles' (Ley 25.326). El trabajador no está obligado a revelar públicamente su diagnóstico en el telegrama; este debe ser verificado por el médico de control bajo secreto profesional."
   },
   {
     question: "Durante el período de reserva de puesto de trabajo (Art. 211 LCT), ¿cuál es la situación del trabajador respecto de la remuneración y la obra social?",
     answers: [
-      "Percibe el 50% de la remuneración habitual y mantiene la cobertura de la obra social.",
       "No percibe salario, pero conserva la cobertura de la obra social.",
+      "Percibe el 50% de la remuneración habitual y mantiene la cobertura de la obra social.",
       "Cobra el 100% del sueldo pero pierde de inmediato la afiliación a la obra social.",
       "No percibe salario ni conserva ningún beneficio o cobertura médica."
     ],
-    correct: 1,
+    correct: 0,
     fundamento: "La reserva de puesto (1 año tras agotar la licencia paga) suspende el pago de salarios, pero mantiene vigente el contrato de trabajo y los beneficios de la obra social (Art. 211 LCT)."
   },
   {
@@ -207,11 +207,11 @@ agregarTema("tema3", "🏥 Reserva e Incapacidad", [
     question: "Si el trabajador queda con una incapacidad parcial definitiva y el empleador demuestra objetivamente que NO tiene tareas livianas compatibles, ¿qué indemnización corresponde?",
     answers: [
       "Ninguna, el vínculo se disuelve sin compensación por fuerza mayor objetiva.",
-      "La indemnización reducida del Artículo 247 LCT (50% de la indemnización por despido).",
       "La indemnización duplicada del Artículo 245 bis por despido discriminatorio.",
+      "La indemnización reducida del Artículo 247 LCT (50% de la indemnización por despido).",
       "La indemnización completa del Artículo 245 LCT más dos años de salarios caídos."
     ],
-    correct: 1,
+    correct: 2,
     fundamento: "Si el empleador demuestra que no puede asignar tareas acordes por causas que no le son imputables, el contrato se extingue abonando la indemnización reducida del Art. 247 LCT (Art. 212 2° párrafo)."
   },
   {
@@ -245,11 +245,11 @@ agregarTema("tema4", "💰 Indemnizaciones", [
     question: "Si la enfermedad o accidente inculpable deriva en incapacidad absoluta para el trabajador, ¿qué indemnización debe abonar el empleador según el Art. 212 LCT?",
     answers: [
       "La indemnización reducida equivalente al Artículo 247 LCT.",
-      "Una indemnización de monto igual a la establecida en el Artículo 245 LCT.",
+      "Un subsidio mensual de salario mínimo vital y móvil durante 12 meses.",
       "Ninguna, la prestación económica recae de forma exclusiva sobre la ANSES.",
-      "Un subsidio mensual de salario mínimo vital y móvil durante 12 meses."
+      "Una indemnización de monto igual a la establecida en el Artículo 245 LCT."
     ],
-    correct: 1,
+    correct: 3,
     fundamento: "El 4° párrafo del Art. 212 LCT dispone que ante incapacidad absoluta, el empleador debe abonar una indemnización equivalente a la del Art. 245 LCT. Este beneficio es acumulable con prestaciones de la seguridad social."
   },
   {
