@@ -674,24 +674,6 @@ function actualizarBotonesTemas() {
 
 actualizarBotonesTemas();
 
-            document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
-            button.classList.add('selected');
-            
-            if (topic === 'todas') {
-                gameState.questions = [
-                    ...allQuestions.tema1,
-                    ...allQuestions.tema2,
-                    ...allQuestions.tema3,
-                    ...allQuestions.tema4
-                ];
-            } else {
-                gameState.questions = [...allQuestions[topic]];
-            }
-            
-            gameState.questions = shuffleArray(gameState.questions);
-            alert(`✅ ${gameState.questions.length} preguntas cargadas y mezcladas aleatoriamente.`);
-        
-
         // Cada ronda publica pregunta, opciones y reloj en una sola escritura.
         async function startGame() {
             if (!checkConnection()) return;
