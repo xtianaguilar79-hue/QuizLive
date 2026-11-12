@@ -6,6 +6,12 @@
     <title>QuizLive - Enfermedades Inculpables</title>
     <link href="https://cdn.jsdelivr.net/npm/@fontsource/poppins@5.0.8/index.min.css" rel="stylesheet">
     <style>
+        .app-message { position: fixed; top: 12px; left: 5%; width: 90%; max-height: 30vh; overflow: auto;
+            z-index: 2000; padding: 14px; border-radius: 12px; background: #7c2525; color: white; text-align: center; }
+        .app-message[hidden] { display: none; }
+        .question-text, .player-answer-btn { overflow-wrap: anywhere; }
+        .player-answer-btn { touch-action: manipulation; }
+        .join-link-info { max-width: 650px; overflow-wrap: anywhere; margin-top: 12px; font-size: .85rem; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
@@ -13,7 +19,7 @@
             min-height: 100vh; overflow-x: hidden; color: white;
         }
         .screen {
-            display: none; min-height: 100vh; padding: 20px;
+            display: none; min-height: 100vh; min-height: 100dvh; padding: 20px;
             animation: fadeIn 0.4s ease;
         }
         .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -192,11 +198,12 @@
     </style>
 </head>
 <body>
+    <div id="app-message" class="app-message" role="alert" hidden></div>
 
     <div id="screen-main" class="screen active">
         <div class="logo">🎮 QuizLive</div>
         <p class="subtitle">Enfermedades Inculpables - Derecho Laboral Argentina</p>
-        <div class="firebase-status connected" id="firebase-status">✅ Conectado a Firebase</div>
+        <div class="firebase-status" id="firebase-status">⏳ Conectando a Firebase...</div>
         <button class="btn btn-primary" onclick="showScreen('screen-host-setup')">🖥️ Crear Partida (Profesor)</button>
         <button class="btn btn-secondary" onclick="showScreen('screen-join')">📱 Unirse como Alumno</button>
     </div>
@@ -204,18 +211,18 @@
     <div id="screen-host-setup" class="screen">
         <div class="logo">🖥️ Configurar Partida</div>
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchEditorTab('preset')">Temas Predefinidos</button>
-            <button class="nav-tab" onclick="switchEditorTab('custom')">Mis Preguntas</button>
+            <button class="nav-tab active" onclick="switchEditorTab('preset', this)">Temas Predefinidos</button>
+            <button class="nav-tab" onclick="switchEditorTab('custom', this)">Mis Preguntas</button>
         </div>
         
         <div id="editor-preset">
             <p class="subtitle">Selecciona un tema (5 preguntas cada uno)</p>
             <div class="topic-selector">
-                <button class="topic-btn" onclick="loadTopic('tema1')">📋 Licencia y Plazos</button>
-                <button class="topic-btn" onclick="loadTopic('tema2')">📝 Avisos y Certificados</button>
-                <button class="topic-btn" onclick="loadTopic('tema3')">🏥 Reserva e Incapacidad</button>
-                <button class="topic-btn" onclick="loadTopic('tema4')">💰 Indemnizaciones</button>
-                <button class="topic-btn" onclick="loadTopic('todas')">🎲 Todas (20 preguntas)</button>
+                <button class="topic-btn" onclick="loadTopic('tema1', this)">📋 Licencia y Plazos</button>
+                <button class="topic-btn" onclick="loadTopic('tema2', this)">📝 Avisos y Certificados</button>
+                <button class="topic-btn" onclick="loadTopic('tema3', this)">🏥 Reserva e Incapacidad</button>
+                <button class="topic-btn" onclick="loadTopic('tema4', this)">💰 Indemnizaciones</button>
+                <button class="topic-btn" onclick="loadTopic('todas', this)">🎲 Todas (20 preguntas)</button>
             </div>
         </div>
 
@@ -248,6 +255,7 @@
             <div class="qr-section">
                 <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">Escanea este código QR:</p>
                 <canvas id="qr-canvas" class="qr-canvas" width="200" height="200"></canvas>
+                <p id="join-link-info" class="join-link-info"></p>
             </div>
             <div class="players-waiting-list" id="waiting-players-list"></div>
             <div class="waiting-dots"><span></span><span></span><span></span></div>
@@ -289,15 +297,15 @@
                 <div id="final-leaderboard"></div>
             </div>
             <button class="btn btn-primary" onclick="resetGame()">🔄 Jugar de Nuevo</button>
-            <button class="btn btn-small" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="showScreen('screen-main')">← Menú Principal</button>
+            <button class="btn btn-small" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="resetGame()">← Menú Principal</button>
         </div>
     </div>
 
     <div id="screen-join" class="screen">
         <div class="logo">📱 Unirse</div>
         <p class="subtitle">Ingresa el código de la sala</p>
-        <input type="text" class="input-field" id="join-code-input" placeholder="Código de sala" maxlength="6" style="font-size:2rem; letter-spacing:8px; text-transform:uppercase;">
-        <input type="text" class="input-field" id="join-name-input" placeholder="Tu nombre">
+        <input type="text" class="input-field" id="join-code-input" placeholder="Código de sala" maxlength="5" autocapitalize="characters" autocorrect="off" spellcheck="false" style="font-size:2rem; letter-spacing:8px; text-transform:uppercase;">
+        <input type="text" class="input-field" id="join-name-input" placeholder="Tu nombre" maxlength="40" autocomplete="nickname">
         <button class="btn btn-primary" onclick="joinGame()">🎮 Unirse al Juego</button>
         <p id="join-error" style="color:#ff6b6b; margin-top:10px; display:none;">Código no encontrado. Verifica e intenta de nuevo.</p>
         <button class="btn btn-small" style="background:rgba(255,255,255,0.1); color:white; margin-top:20px;" onclick="showScreen('screen-main')">← Volver</button>
@@ -319,6 +327,7 @@
             <div class="timer-display" id="player-timer">30</div>
             <div class="question-text" id="player-question-text" style="font-size:1.1rem;">Pregunta</div>
             <div class="player-answer-grid" id="player-answer-grid"></div>
+            <p id="player-answer-status" role="status" aria-live="polite" style="text-align:center; margin:10px;">Elige una respuesta.</p>
         </div>
     </div>
 
@@ -361,25 +370,107 @@
             appId: "1:392706495502:web:3db546e83589a981cb185f"
         };
 
+        const QUESTION_DURATION = 30;
         let db = null;
         let firebaseInitialized = false;
+        let firebaseConnected = false;
+        let serverTimeOffset = 0;
+        let roomRef = null, playersRef = null, answersRef = null, gameRef = null;
+
+        function newGameState() {
+            return {
+                roomCode: '', host: false, playerId: '', playerName: '', players: {}, questions: [],
+                currentQuestion: -1, activeQuestionId: null, timeLeft: QUESTION_DURATION,
+                timerInterval: null, resultTimeout: null, answered: false, selectedAnswer: null,
+                scores: {}, gameStarted: false, status: 'waiting', game: null, busy: false,
+                ending: false, roundAnswers: {}, pendingResults: null, endRetryAt: 0
+            };
+        }
+        let gameState = newGameState();
+
+        function serverNow() { return Date.now() + serverTimeOffset; }
+
+        function showMessage(message) {
+            const element = document.getElementById('app-message');
+            element.textContent = message;
+            element.hidden = false;
+        }
+
+        function clearMessage() { document.getElementById('app-message').hidden = true; }
+
+        function showDatabaseError(error) {
+            console.error('QuizLive:', error);
+            const permission = /permission|denied/i.test(error.code || error.message || '');
+            showMessage(permission ?
+                'Firebase no permite esta operación. Revisa los permisos de esta aplicación en Realtime Database.' :
+                'No se pudo completar la operación. Revisa la conexión e intenta otra vez.');
+        }
+
+        function checkConnection() {
+            if (firebaseInitialized && firebaseConnected) return true;
+            showMessage(firebaseInitialized ? 'Espera a que se conecte a Firebase y vuelve a intentarlo.' :
+                'No se pudo cargar Firebase. Revisa Internet y recarga esta página.');
+            return false;
+        }
+
+        async function readWithTimeout(ref) {
+            let timeout;
+            try {
+                return await Promise.race([
+                    ref.get(),
+                    new Promise((_, reject) => {
+                        timeout = setTimeout(() => reject(new Error('La conexión tardó demasiado. Revisa Internet e intenta otra vez.')), 15000);
+                    })
+                ]);
+            } finally {
+                clearTimeout(timeout);
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+        }
 
         function initializeFirebase() {
+            const indicator = document.getElementById('firebase-status');
             try {
+                if (typeof firebase === 'undefined') throw new Error('Firebase no se pudo descargar.');
                 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
                 firebaseInitialized = true;
-            } catch(e) { console.error('Firebase init error:', e); }
+                db.ref('.info/serverTimeOffset').on('value', snapshot => {
+                    serverTimeOffset = Number(snapshot.val()) || 0;
+                    tickTimer();
+                });
+                db.ref('.info/connected').on('value', snapshot => {
+                    firebaseConnected = snapshot.val() === true;
+                    indicator.textContent = firebaseConnected ? '✅ Conectado a Firebase' : '⏳ Conectando a Firebase...';
+                    indicator.classList.toggle('connected', firebaseConnected);
+                    if (!firebaseConnected && gameState.roomCode) {
+                        showMessage('Sin conexión. Mantén esta página abierta mientras se reconecta.');
+                    } else if (firebaseConnected) {
+                        clearMessage();
+                        tickTimer();
+                    }
+                }, showDatabaseError);
+            } catch (error) {
+                indicator.textContent = '❌ No se pudo conectar a Firebase';
+                indicator.classList.remove('connected');
+                showDatabaseError(error);
+            }
         }
         initializeFirebase();
 
-        let gameState = {
-            roomCode: '', host: false, playerId: '', playerName: '', players: {},
-            questions: [], currentQuestion: 0, timeLeft: 30, timerInterval: null, answered: false, scores: {},
-            gameStarted: false
-        };
+        // Al volver al navegador, el reloj se calcula de nuevo desde la hora compartida.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState !== 'visible') return;
+            tickTimer();
+            if (!gameState.host && gameRef && firebaseConnected) {
+                gameRef.once('value').then(snapshot => applyPlayerGame(snapshot.val())).catch(showDatabaseError);
+            }
+        });
 
-        let roomRef = null, playersRef = null, answersRef = null, gameRef = null;
 
         // ==================== 20 PREGUNTAS ORGANIZADAS ====================
         const allQuestions = {
@@ -555,12 +646,12 @@
                     div.className = 'question-editor';
                     div.id = `editor-q-${id}`;
                     div.innerHTML = `
-                        <textarea placeholder="Escribe tu pregunta..." id="q-text-${id}">${q.question}</textarea>
+                        <textarea placeholder="Escribe tu pregunta..." id="q-text-${id}">${escapeHtml(q.question)}</textarea>
                         <div class="answer-inputs">
-                            <input type="text" placeholder="Respuesta A (rojo)" id="q-a-${id}-0" style="border-color: #e74c3c;" value="${q.answers[0] || ''}">
-                            <input type="text" placeholder="Respuesta B (azul)" id="q-a-${id}-1" style="border-color: #3498db;" value="${q.answers[1] || ''}">
-                            <input type="text" placeholder="Respuesta C (amarillo)" id="q-a-${id}-2" style="border-color: #f39c12;" value="${q.answers[2] || ''}">
-                            <input type="text" placeholder="Respuesta D (verde)" id="q-a-${id}-3" style="border-color: #27ae60;" value="${q.answers[3] || ''}">
+                            <input type="text" placeholder="Respuesta A (rojo)" id="q-a-${id}-0" style="border-color: #e74c3c;" value="${escapeHtml(q.answers[0] || '')}">
+                            <input type="text" placeholder="Respuesta B (azul)" id="q-a-${id}-1" style="border-color: #3498db;" value="${escapeHtml(q.answers[1] || '')}">
+                            <input type="text" placeholder="Respuesta C (amarillo)" id="q-a-${id}-2" style="border-color: #f39c12;" value="${escapeHtml(q.answers[2] || '')}">
+                            <input type="text" placeholder="Respuesta D (verde)" id="q-a-${id}-3" style="border-color: #27ae60;" value="${escapeHtml(q.answers[3] || '')}">
                         </div>
                         <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:10px;">Selecciona la respuesta correcta:</p>
                         <div class="correct-selector">
@@ -570,8 +661,8 @@
                             <button class="correct-btn ${q.correct===3?'selected':''}" onclick="selectCorrect(${id}, 3)" id="correct-${id}-3">D</button>
                         </div>
                         <div class="explanation-inputs">
-                            <textarea placeholder="Explicación si acierta..." id="q-exp-correct-${id}" style="border-color: #6bcb77;">${q.explanationCorrect || ''}</textarea>
-                            <textarea placeholder="Explicación si falla..." id="q-exp-wrong-${id}" style="border-color: #ff6b6b;">${q.explanationWrong || ''}</textarea>
+                            <textarea placeholder="Explicación si acierta..." id="q-exp-correct-${id}" style="border-color: #6bcb77;">${escapeHtml(q.explanationCorrect || '')}</textarea>
+                            <textarea placeholder="Explicación si falla..." id="q-exp-wrong-${id}" style="border-color: #ff6b6b;">${escapeHtml(q.explanationWrong || '')}</textarea>
                         </div>
                         <button class="btn btn-small btn-danger" style="margin-top:10px;" onclick="removeQuestionEditor(${id})">🗑️ Eliminar</button>
                     `;
@@ -650,9 +741,9 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        function switchEditorTab(tab) {
+        function switchEditorTab(tab, button) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+            button.classList.add('active');
             document.getElementById('editor-preset').style.display = tab === 'preset' ? 'block' : 'none';
             document.getElementById('editor-custom').style.display = tab === 'custom' ? 'block' : 'none';
             if (tab === 'custom' && document.getElementById('custom-questions-list').children.length === 0) {
@@ -661,9 +752,9 @@
             }
         }
 
-        function loadTopic(topic) {
+        function loadTopic(topic, button) {
             document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
-            event.target.classList.add('selected');
+            button.classList.add('selected');
             
             if (topic === 'todas') {
                 gameState.questions = [
@@ -680,48 +771,57 @@
             alert(`✅ ${gameState.questions.length} preguntas cargadas y mezcladas aleatoriamente.`);
         }
 
-        // --- LÓGICA DEL JUEGO ---
+        // Cada ronda publica pregunta, opciones y reloj en una sola escritura.
         async function startGame() {
-            if (!firebaseInitialized) { alert('⚠️ Firebase no está listo. Recarga.'); return; }
-            
+            if (!checkConnection()) return;
+            if (gameState.busy) return;
             const customTab = document.getElementById('editor-custom').style.display !== 'none';
-            if (customTab) {
-                const custom = collectCustomQuestions();
-                if (custom.length > 0) gameState.questions = custom;
+            const questions = customTab ? collectCustomQuestions() : gameState.questions;
+            if (!questions.length) {
+                alert('⚠️ Selecciona un tema o completa una pregunta y sus cuatro opciones.');
+                return;
             }
-
-            if (gameState.questions.length === 0) { alert('⚠️ Selecciona un tema o crea preguntas.'); return; }
-
-            gameState.roomCode = generateRoomCode();
+            cleanupListeners();
+            gameState = newGameState();
+            gameState.questions = questions;
             gameState.host = true;
-            gameState.currentQuestion = 0;
-            gameState.players = {};
-            gameState.scores = {};
-            gameState.gameStarted = false;
-
+            gameState.busy = true;
+            clearMessage();
             try {
-                roomRef = db.ref('rooms/' + gameState.roomCode);
-                playersRef = db.ref('rooms/' + gameState.roomCode + '/players');
-                answersRef = db.ref('rooms/' + gameState.roomCode + '/answers');
-                gameRef = db.ref('rooms/' + gameState.roomCode + '/game');
-
-                await roomRef.set({ created: Date.now(), host: true, status: 'waiting', currentQuestion: -1, totalQuestions: gameState.questions.length });
-
-                playersRef.on('child_added', (snapshot) => {
-                    gameState.players[snapshot.key] = snapshot.val();
+                // Reserva el código para no sobrescribir una sala existente.
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    const code = generateRoomCode();
+                    const candidate = db.ref('rooms/' + code);
+                    const reservation = await candidate.transaction(current => current === null ? {
+                        schemaVersion: 2, created: firebase.database.ServerValue.TIMESTAMP,
+                        status: 'waiting', currentQuestion: -1, totalQuestions: questions.length,
+                        game: { status: 'waiting', totalQuestions: questions.length, duration: QUESTION_DURATION }
+                    } : undefined);
+                    if (reservation.committed) {
+                        gameState.roomCode = code;
+                        roomRef = candidate;
+                        break;
+                    }
+                }
+                if (!roomRef) throw new Error('No se pudo reservar un código. Intenta otra vez.');
+                playersRef = roomRef.child('players');
+                gameRef = roomRef.child('game');
+                playersRef.on('value', snapshot => {
+                    gameState.players = snapshot.val() || {};
+                    Object.entries(gameState.players).forEach(([pid, player]) => {
+                        if (gameState.scores[pid] === undefined) gameState.scores[pid] = player.score || 0;
+                    });
                     updateWaitingPlayers();
-                });
-
-                answersRef.on('child_added', (snapshot) => {
-                    const ans = snapshot.val();
-                    handlePlayerAnswer(ans.playerId, ans.answerIndex, ans.timeLeft);
-                });
-
+                }, showDatabaseError);
                 showScreen('screen-host-waiting');
                 document.getElementById('room-code-display').textContent = gameState.roomCode;
                 updatePlayerCount();
-                setTimeout(generateQR, 300);
-            } catch(e) { alert('❌ Error al crear sala.'); }
+                generateQR();
+            } catch (error) {
+                showDatabaseError(error);
+            } finally {
+                gameState.busy = false;
+            }
         }
 
         function generateRoomCode() {
@@ -732,269 +832,478 @@
         }
 
         async function joinGame() {
-            if (!firebaseInitialized) { alert('⚠️ Firebase no está listo.'); return; }
+            if (!checkConnection() || gameState.busy) return;
             const code = document.getElementById('join-code-input').value.trim().toUpperCase();
-            const name = document.getElementById('join-name-input').value.trim();
+            const name = document.getElementById('join-name-input').value.trim().slice(0, 40);
             const errorEl = document.getElementById('join-error');
-
-            if (!code || !name) { errorEl.textContent = '⚠️ Ingresa código y nombre.'; errorEl.style.display = 'block'; return; }
-
+            errorEl.style.display = 'none';
+            if (!/^[A-Z0-9]{5}$/.test(code) || !name) {
+                errorEl.textContent = '⚠️ Ingresa el código de 5 caracteres y tu nombre.';
+                errorEl.style.display = 'block';
+                return;
+            }
+            gameState.busy = true;
             try {
-                const roomSnapshot = await db.ref('rooms/' + code).once('value');
-                if (!roomSnapshot.exists()) {
-                    errorEl.textContent = '❌ Código no encontrado.';
-                    errorEl.style.display = 'block'; return;
+                const snapshot = await readWithTimeout(db.ref('rooms/' + code));
+                const room = snapshot.val();
+                if (!room) throw new Error('Código no encontrado. Verifica el código de la sala.');
+                if (room.status === 'finished' || room.game?.status === 'finished') {
+                    throw new Error('Esta partida ya finalizó.');
                 }
-                const roomData = roomSnapshot.val();
-                if (roomData.status === 'finished') {
-                    errorEl.textContent = '❌ Partida finalizada.';
-                    errorEl.style.display = 'block'; return;
+                if (room.schemaVersion !== 2) {
+                    throw new Error('El profesor debe crear una nueva sala con el archivo corregido.');
                 }
-
+                cleanupListeners();
+                gameState = newGameState();
+                gameState.busy = true;
                 gameState.roomCode = code;
                 gameState.playerName = name;
-                gameState.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-                gameState.host = false;
-                gameState.answered = false;
-                gameState.gameStarted = false;
-
-                await db.ref('rooms/' + code + '/players/' + gameState.playerId).set({ name: name, joinedAt: Date.now(), score: 0 });
-
-                // Listener del juego para el alumno
-                const gameRefListener = db.ref('rooms/' + code + '/game');
-                gameRefListener.on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    if (!data) return;
-                    
-                    // CORRECCIÓN CLAVE: Si el juego está en 'playing', mostrar pregunta SIEMPRE
-                    if (data.status === 'playing') {
-                        if (!gameState.gameStarted || gameState.currentQuestion !== data.currentQuestion) {
-                            gameState.currentQuestion = data.currentQuestion;
-                            gameState.gameStarted = true;
-                            showQuestion();
-                        }
-                    } else if (data.status === 'results') {
-                        handlePlayerResult(data);
-                    } else if (data.status === 'finished') {
-                        showScreen('screen-player-final');
-                        document.getElementById('player-final-score').textContent = `${gameState.scores[gameState.playerId] || 0} pts`;
-                        document.getElementById('player-final-emoji').textContent = '🎉';
-                        document.getElementById('player-final-text').textContent = '¡Juego Terminado!';
-                        document.getElementById('player-final-rank').textContent = '¡Gracias por jugar!';
-                    }
+                roomRef = db.ref('rooms/' + code);
+                playersRef = roomRef.child('players');
+                gameRef = roomRef.child('game');
+                gameState.playerId = playersRef.push().key;
+                await playersRef.child(gameState.playerId).set({
+                    name, joinedAt: firebase.database.ServerValue.TIMESTAMP, score: 0
                 });
 
-                // Si el juego ya está en marcha cuando se une
-                if (roomData.status === 'playing') {
-                    gameState.currentQuestion = roomData.currentQuestion;
-                    gameState.gameStarted = true;
-                }
-
-                errorEl.style.display = 'none';
-                showScreen('screen-player-waiting');
+                // Primero la espera; después el listener puede abrir la pregunta actual.
                 document.getElementById('player-welcome').textContent = `¡Hola, ${name}! 🎉`;
-            } catch(e) {
-                errorEl.textContent = '❌ Error al unirse.'; errorEl.style.display = 'block';
+                showScreen('screen-player-waiting');
+                clearMessage();
+                gameRef.on('value', snapshot => applyPlayerGame(snapshot.val()), showDatabaseError);
+            } catch (error) {
+                errorEl.textContent = '❌ ' + error.message;
+                errorEl.style.display = 'block';
+                showScreen('screen-join');
+            } finally {
+                gameState.busy = false;
+            }
+        }
+
+        function applyPlayerGame(data) {
+            if (gameState.host) return;
+            if (!data) {
+                clearInterval(gameState.timerInterval);
+                showMessage('La sala dejó de estar disponible. Pide al profesor un nuevo código.');
+                return;
+            }
+            if (data.status === 'waiting') return;
+            if (data.status === 'playing') {
+                if (!data.question || typeof data.question.question !== 'string' ||
+                    !Array.isArray(data.question.answers) || data.question.answers.length !== 4 ||
+                    !Number.isFinite(data.startTime) || data.duration !== QUESTION_DURATION || !data.questionId) {
+                    showMessage('La pregunta está incompleta. El profesor debe crear una nueva sala con el archivo corregido.');
+                    return;
+                }
+                const isNew = gameState.activeQuestionId !== data.questionId;
+                gameState.game = data;
+                gameState.status = 'playing';
+                gameState.currentQuestion = data.currentQuestion;
+                gameState.gameStarted = true;
+                if (isNew) {
+                    gameState.activeQuestionId = data.questionId;
+                    gameState.answered = false;
+                    gameState.selectedAnswer = null;
+                    clearMessage();
+                    showQuestion();
+                } else if (!document.getElementById('screen-player-question').classList.contains('active')) {
+                    showQuestion();
+                } else {
+                    tickTimer();
+                }
+            } else if (data.status === 'results') {
+                gameState.status = 'results';
+                gameState.game = data;
+                gameState.currentQuestion = data.currentQuestion;
+                handlePlayerResult(data);
+            } else if (data.status === 'finished') {
+                gameState.status = 'finished';
+                clearInterval(gameState.timerInterval);
+                clearMessage();
+                const ranking = data.leaderboard || [];
+                const index = ranking.findIndex(player => player.id === gameState.playerId);
+                const score = index >= 0 ? ranking[index].score : (gameState.scores[gameState.playerId] || 0);
+                document.getElementById('player-final-score').textContent = `${score} pts`;
+                document.getElementById('player-final-emoji').textContent = index === 0 ? '🏆' : '🎉';
+                document.getElementById('player-final-text').textContent = '¡Juego terminado!';
+                document.getElementById('player-final-rank').textContent = index >= 0 ?
+                    `Posición: #${index + 1} de ${ranking.length}` : '¡Gracias por jugar!';
+                showScreen('screen-player-final');
             }
         }
 
         async function startQuestions() {
-            if (Object.keys(gameState.players).length === 0 && !confirm('⚠️ No hay jugadores. ¿Iniciar solo?')) return;
-            gameState.currentQuestion = 0;
-            gameState.gameStarted = true;
-            await gameRef.update({ status: 'playing', currentQuestion: 0, startTime: Date.now() });
-            showQuestion();
+            if (!gameState.host || gameState.busy || gameState.status === 'playing') return;
+            if (!Object.keys(gameState.players).length && !confirm('⚠️ No hay jugadores. ¿Iniciar solo?')) return;
+            await publishQuestion(0);
+        }
+
+        async function publishQuestion(index) {
+            if (!checkConnection() || gameState.busy) return;
+            gameState.busy = true;
+            const q = gameState.questions[index];
+            try {
+                if (answersRef) answersRef.off();
+                clearInterval(gameState.timerInterval);
+                clearTimeout(gameState.resultTimeout);
+                const data = {
+                    status: 'playing', questionId: 'q_' + index, currentQuestion: index,
+                    totalQuestions: gameState.questions.length, duration: QUESTION_DURATION,
+                    startTime: firebase.database.ServerValue.TIMESTAMP,
+                    // La respuesta correcta se publica al terminar, no en la pregunta.
+                    question: { question: q.question, answers: q.answers }
+                };
+                await roomRef.update({ status: 'playing', currentQuestion: index, game: data });
+                const snapshot = await gameRef.once('value');
+                gameState.game = snapshot.val();
+                gameState.status = 'playing';
+                gameState.currentQuestion = index;
+                gameState.activeQuestionId = data.questionId;
+                gameState.gameStarted = true;
+                gameState.roundAnswers = {};
+                gameState.pendingResults = null;
+                gameState.ending = false;
+                gameState.endRetryAt = 0;
+                clearMessage();
+                answersRef = roomRef.child('answers/' + data.questionId);
+                showQuestion();
+                answersRef.on('child_added', snapshot => handlePlayerAnswer(snapshot.key, snapshot.val()), showDatabaseError);
+            } catch (error) {
+                showDatabaseError(error);
+            } finally {
+                gameState.busy = false;
+            }
         }
 
         function showQuestion() {
-            const q = gameState.questions[gameState.currentQuestion];
-            if (!q) { showFinalResults(); return; }
-
-            gameState.timeLeft = 30;
-            gameState.answered = false;
-
-            if (gameState.host) {
-                showScreen('screen-host-question');
-                document.getElementById('host-question-text').textContent = q.question;
-                document.getElementById('question-counter').textContent = `Pregunta ${gameState.currentQuestion + 1} de ${gameState.questions.length}`;
-                document.getElementById('progress-fill').style.width = `${((gameState.currentQuestion) / gameState.questions.length) * 100}%`;
-                updatePlayerCount();
-
-                const grid = document.getElementById('host-answers-grid');
-                const colors = ['red', 'blue', 'yellow', 'green'];
-                grid.innerHTML = q.answers.map((a, i) => `<div class="answer-card ${colors[i]}" id="host-answer-${i}"><span>${a}</span><span class="answer-count" id="answer-count-${i}">0</span></div>`).join('');
-                document.getElementById('answer-status').textContent = 'Esperando respuestas...';
-                document.getElementById('timer-display').textContent = gameState.timeLeft;
-                document.getElementById('timer-display').classList.remove('warning');
-                gameState.answerCounts = [0, 0, 0, 0];
-                startTimer();
-            } else {
-                showScreen('screen-player-question');
-                document.getElementById('player-question-text').textContent = q.question;
-                document.getElementById('player-question-counter').textContent = `Pregunta ${gameState.currentQuestion + 1} de ${gameState.questions.length}`;
-                document.getElementById('player-progress-fill').style.width = `${((gameState.currentQuestion) / gameState.questions.length) * 100}%`;
-                document.getElementById('player-timer').textContent = gameState.timeLeft;
-                document.getElementById('player-timer').classList.remove('warning');
-
-                const grid = document.getElementById('player-answer-grid');
-                const colors = ['red', 'blue', 'yellow', 'green'];
-                grid.innerHTML = q.answers.map((a, i) => `<button class="player-answer-btn ${colors[i]}" onclick="playerAnswer(${i})" id="player-btn-${i}">${a}</button>`).join('');
-                gameState.answered = false;
-                startTimer();
+            const data = gameState.game;
+            const q = data.question;
+            const host = gameState.host;
+            showScreen(host ? 'screen-host-question' : 'screen-player-question');
+            document.getElementById(host ? 'host-question-text' : 'player-question-text').textContent = q.question;
+            document.getElementById(host ? 'question-counter' : 'player-question-counter').textContent =
+                `Pregunta ${data.currentQuestion + 1} de ${data.totalQuestions}`;
+            document.getElementById(host ? 'progress-fill' : 'player-progress-fill').style.width =
+                `${(data.currentQuestion / data.totalQuestions) * 100}%`;
+            const grid = document.getElementById(host ? 'host-answers-grid' : 'player-answer-grid');
+            const colors = ['red', 'blue', 'yellow', 'green'];
+            grid.replaceChildren();
+            q.answers.forEach((answer, index) => {
+                const card = document.createElement(host ? 'div' : 'button');
+                card.className = `${host ? 'answer-card' : 'player-answer-btn'} ${colors[index]}`;
+                card.id = `${host ? 'host-answer' : 'player-btn'}-${index}`;
+                if (host) {
+                    const text = document.createElement('span');
+                    text.textContent = answer;
+                    const count = document.createElement('span');
+                    count.className = 'answer-count';
+                    count.id = `answer-count-${index}`;
+                    count.textContent = '0';
+                    card.append(text, count);
+                } else {
+                    card.type = 'button';
+                    card.textContent = `${'ABCD'[index]}. ${answer}`;
+                    card.onclick = () => playerAnswer(index);
+                }
+                grid.appendChild(card);
+            });
+            document.getElementById(host ? 'answer-status' : 'player-answer-status').textContent = host ?
+                'Esperando respuestas...' : 'Elige una respuesta.';
+            if (!host && gameState.answered) {
+                document.querySelectorAll('.player-answer-btn').forEach((button, index) => {
+                    button.disabled = true;
+                    button.classList.toggle('selected', index === gameState.selectedAnswer);
+                });
+                document.getElementById('player-answer-status').textContent = 'Respuesta seleccionada. Esperando resultados...';
             }
+            updatePlayerCount();
+            startTimer();
+        }
+
+        function remainingSeconds() {
+            if (!gameState.game) return 0;
+            return Math.max(0, Math.min(QUESTION_DURATION,
+                Math.ceil((gameState.game.startTime + QUESTION_DURATION * 1000 - serverNow()) / 1000)));
         }
 
         function startTimer() {
             clearInterval(gameState.timerInterval);
-            gameState.timerInterval = setInterval(() => {
-                gameState.timeLeft--;
-                if (gameState.host) {
-                    document.getElementById('timer-display').textContent = gameState.timeLeft;
-                    if (gameState.timeLeft <= 5) document.getElementById('timer-display').classList.add('warning');
-                } else {
-                    document.getElementById('player-timer').textContent = gameState.timeLeft;
-                    if (gameState.timeLeft <= 5) document.getElementById('player-timer').classList.add('warning');
-                }
-                if (gameState.timeLeft <= 0) {
-                    clearInterval(gameState.timerInterval);
-                    if (gameState.host) endQuestion();
-                }
-            }, 1000);
+            tickTimer();
+            if (gameState.status === 'playing') gameState.timerInterval = setInterval(tickTimer, 250);
+        }
+
+        function tickTimer() {
+            if (gameState.status !== 'playing' || !gameState.game) return;
+            gameState.timeLeft = remainingSeconds();
+            const timer = document.getElementById(gameState.host ? 'timer-display' : 'player-timer');
+            timer.textContent = gameState.timeLeft;
+            timer.classList.toggle('warning', gameState.timeLeft <= 5);
+            if (gameState.timeLeft > 0) return;
+            if (gameState.host) {
+                if (!gameState.ending && serverNow() >= gameState.endRetryAt) void endQuestion();
+            } else {
+                document.querySelectorAll('.player-answer-btn').forEach(button => button.disabled = true);
+                if (!gameState.answered) document.getElementById('player-answer-status').textContent =
+                    'Tiempo agotado. Esperando resultados del profesor...';
+            }
         }
 
         async function playerAnswer(answerIndex) {
-            if (gameState.answered) return;
+            if (gameState.host || gameState.status !== 'playing' || gameState.answered ||
+                remainingSeconds() <= 0 || !Number.isInteger(answerIndex) || answerIndex < 0 || answerIndex > 3) return;
+            if (!checkConnection()) return;
+            const questionId = gameState.activeQuestionId;
             gameState.answered = true;
-            document.querySelectorAll('.player-answer-btn').forEach(btn => btn.disabled = true);
+            gameState.selectedAnswer = answerIndex;
+            document.querySelectorAll('.player-answer-btn').forEach(button => button.disabled = true);
             document.getElementById(`player-btn-${answerIndex}`).classList.add('selected');
+            document.getElementById('player-answer-status').textContent = 'Enviando respuesta...';
             try {
-                await db.ref('rooms/' + gameState.roomCode + '/answers/' + gameState.playerId).set({
-                    playerId: gameState.playerId, answerIndex: answerIndex, timeLeft: gameState.timeLeft, timestamp: Date.now()
+                // Una respuesta por jugador y ronda; las rondas nunca comparten el mismo nodo.
+                const submission = await roomRef.child(`answers/${questionId}/${gameState.playerId}`).transaction(current =>
+                    current === null ? {
+                        playerId: gameState.playerId, questionId, answerIndex,
+                        submittedAt: firebase.database.ServerValue.TIMESTAMP
+                    } : undefined);
+                if (gameState.activeQuestionId !== questionId || gameState.status !== 'playing') return;
+                const saved = submission.snapshot.val();
+                if (!saved) throw new Error('No se pudo confirmar la respuesta.');
+                gameState.selectedAnswer = saved.answerIndex;
+                document.querySelectorAll('.player-answer-btn').forEach((button, index) =>
+                    button.classList.toggle('selected', index === saved.answerIndex));
+                document.getElementById('player-answer-status').textContent = '✅ Respuesta enviada. Esperando resultados...';
+                clearMessage();
+            } catch (error) {
+                if (gameState.activeQuestionId !== questionId || gameState.status !== 'playing') return;
+                gameState.answered = false;
+                gameState.selectedAnswer = null;
+                document.querySelectorAll('.player-answer-btn').forEach(button => {
+                    button.disabled = remainingSeconds() <= 0;
+                    button.classList.remove('selected');
                 });
-            } catch(e) {}
+                document.getElementById('player-answer-status').textContent = 'No se pudo enviar. Intenta otra vez si queda tiempo.';
+                showDatabaseError(error);
+            }
         }
 
-        function handlePlayerAnswer(playerId, answerIndex, timeLeft) {
-            if (!gameState.host) return;
-            if (gameState.players[playerId]) {
-                gameState.players[playerId].lastAnswer = answerIndex;
-                gameState.players[playerId].answerTime = timeLeft;
-                if (gameState.answerCounts) {
-                    gameState.answerCounts[answerIndex]++;
-                    const countEl = document.getElementById(`answer-count-${answerIndex}`);
-                    if (countEl) countEl.textContent = gameState.answerCounts[answerIndex];
-                }
-            }
+        function validAnswer(playerId, answer) {
+            const data = gameState.game;
+            return Boolean(answer && gameState.players[playerId] && answer.playerId === playerId &&
+                answer.questionId === data.questionId && Number.isInteger(answer.answerIndex) &&
+                answer.answerIndex >= 0 && answer.answerIndex < 4 && Number.isFinite(answer.submittedAt) &&
+                answer.submittedAt >= data.startTime && answer.submittedAt < data.startTime + QUESTION_DURATION * 1000);
+        }
+
+        function handlePlayerAnswer(playerId, answer) {
+            if (!gameState.host || gameState.status !== 'playing' || !validAnswer(playerId, answer)) return;
+            gameState.roundAnswers[playerId] = answer;
+            const counts = [0, 0, 0, 0];
+            Object.values(gameState.roundAnswers).forEach(value => counts[value.answerIndex]++);
+            counts.forEach((count, index) => {
+                const element = document.getElementById(`answer-count-${index}`);
+                if (element) element.textContent = count;
+            });
+            document.getElementById('answer-status').textContent =
+                `${Object.keys(gameState.roundAnswers).length} de ${Object.keys(gameState.players).length} respondieron.`;
+        }
+
+        function calculateScores(answers) {
+            const q = gameState.questions[gameState.currentQuestion];
+            const results = {};
+            Object.keys(gameState.players).forEach(pid => {
+                const answer = answers[pid];
+                const answered = validAnswer(pid, answer);
+                const correct = answered && answer.answerIndex === q.correct;
+                const elapsed = answered ? answer.submittedAt - gameState.game.startTime : QUESTION_DURATION * 1000;
+                const points = correct ? Math.max(100, Math.round(500 * (1 - elapsed / (QUESTION_DURATION * 1000)))) : 0;
+                gameState.scores[pid] = (gameState.scores[pid] || 0) + points;
+                results[pid] = { answered, correct, points, totalScore: gameState.scores[pid] };
+            });
+            return results;
         }
 
         async function endQuestion() {
-            clearInterval(gameState.timerInterval);
+            if (!gameState.host || gameState.status !== 'playing' || gameState.ending) return;
+            if (!firebaseConnected) {
+                showMessage('Sin conexión. Los resultados se publicarán al reconectar.');
+                return;
+            }
+            gameState.ending = true;
             const q = gameState.questions[gameState.currentQuestion];
-            if (gameState.host) {
-                const colors = ['red', 'blue', 'yellow', 'green'];
-                for (let i = 0; i < 4; i++) {
-                    const card = document.getElementById(`host-answer-${i}`);
-                    if (i === q.correct) card.classList.add('correct');
-                    else card.classList.add('wrong');
+            try {
+                if (!gameState.pendingResults) {
+                    const snapshot = await readWithTimeout(answersRef);
+                    gameState.pendingResults = calculateScores(snapshot.val() || {});
+                }
+                const results = gameState.pendingResults;
+                const data = {
+                    ...gameState.game, status: 'results', results, correctAnswer: q.correct,
+                    explanationCorrect: q.explanationCorrect || '¡Correcto!',
+                    explanationWrong: q.explanationWrong || `La respuesta correcta era: ${q.answers[q.correct]}.`
+                };
+                const updates = { status: 'results', game: data };
+                Object.entries(results).forEach(([pid, result]) => updates[`players/${pid}/score`] = result.totalScore);
+                await roomRef.update(updates);
+                clearInterval(gameState.timerInterval);
+                gameState.status = 'results';
+                gameState.game = data;
+                clearMessage();
+                for (let index = 0; index < 4; index++) {
+                    document.getElementById(`host-answer-${index}`).classList.add(index === q.correct ? 'correct' : 'wrong');
                 }
                 document.getElementById('answer-status').textContent = '¡Tiempo! Mostrando resultados...';
-                calculateScores();
-
-                const results = {};
-                Object.keys(gameState.players).forEach(pid => {
-                    results[pid] = { correct: gameState.players[pid].lastCorrect, points: gameState.players[pid].lastPoints, totalScore: gameState.scores[pid] || 0 };
-                });
-
-                try {
-                    await gameRef.update({ status: 'results', results: results, correctAnswer: q.correct, explanationCorrect: q.explanationCorrect, explanationWrong: q.explanationWrong });
-                } catch(e) {}
-                setTimeout(() => showQuestionResults(), 2500);
+                gameState.resultTimeout = setTimeout(showQuestionResults, 2500);
+            } catch (error) {
+                gameState.endRetryAt = serverNow() + 3000;
+                showDatabaseError(error);
+            } finally {
+                gameState.ending = false;
             }
         }
 
-        function calculateScores() {
-            const q = gameState.questions[gameState.currentQuestion];
-            Object.keys(gameState.players).forEach(pid => {
-                const player = gameState.players[pid];
-                if (player.lastAnswer !== undefined && player.lastAnswer === q.correct) {
-                    const points = Math.max(100, Math.round(500 * (player.answerTime / 30)));
-                    gameState.scores[pid] = (gameState.scores[pid] || 0) + points;
-                    player.lastPoints = points; player.lastCorrect = true;
-                    db.ref('rooms/' + gameState.roomCode + '/players/' + pid + '/score').set(gameState.scores[pid]);
-                } else {
-                    player.lastPoints = 0; player.lastCorrect = false;
-                }
+        function handlePlayerResult(data) {
+            clearInterval(gameState.timerInterval);
+            clearMessage();
+            const result = data.results?.[gameState.playerId];
+            const feedback = document.getElementById('player-result-feedback');
+            const correct = Boolean(result?.correct);
+            const answered = Boolean(result?.answered);
+            feedback.innerHTML = '<div class="emoji"></div><div class="text"></div><div class="points"></div><div class="explanation"></div>';
+            feedback.querySelector('.emoji').textContent = correct ? '✅' : answered ? '❌' : '⏱️';
+            feedback.querySelector('.text').textContent = correct ? '¡Correcto!' : answered ? 'Respuesta incorrecta' : 'Sin respuesta en esta ronda';
+            feedback.querySelector('.points').textContent = `+${result?.points || 0} pts`;
+            feedback.querySelector('.explanation').textContent = correct ? data.explanationCorrect : data.explanationWrong;
+            if (result) gameState.scores[gameState.playerId] = result.totalScore;
+            showScreen('screen-player-result');
+        }
+
+        function rankedPlayers() {
+            return Object.entries(gameState.players).map(([id, player]) => ({
+                id, name: player.name, score: gameState.scores[id] || 0
+            })).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+        }
+
+        function renderLeaderboard(elementId, ranking) {
+            const list = document.getElementById(elementId);
+            list.replaceChildren();
+            ranking.forEach((player, index) => {
+                const row = document.createElement('div');
+                row.className = 'leaderboard-item';
+                row.style.animationDelay = `${index * 0.1}s`;
+                [['rank', ['🥇', '🥈', '🥉'][index] || '#' + (index + 1)],
+                    ['player-name-lb', player.name], ['player-score-lb', `${player.score} pts`]].forEach(([className, value]) => {
+                    const cell = document.createElement('div');
+                    cell.className = className;
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                list.appendChild(row);
             });
         }
 
-        function handlePlayerResult(gameData) {
-            if (gameState.host) return;
-            clearInterval(gameState.timerInterval);
-            showScreen('screen-player-result');
-            const playerResult = gameData.results[gameState.playerId];
-            if (!playerResult) return;
-            
-            const feedback = document.getElementById('player-result-feedback');
-            if (playerResult.correct) {
-                feedback.innerHTML = `<div class="emoji">✅</div><div class="text">¡Correcto!</div><div class="points">+${playerResult.points} pts</div><div class="explanation">${gameData.explanationCorrect}</div>`;
-            } else {
-                feedback.innerHTML = `<div class="emoji">❌</div><div class="text">Incorrecto</div><div class="points" style="color:#ff6b6b;">0 pts</div><div class="explanation">${gameData.explanationWrong}</div>`;
-            }
-            gameState.scores[gameState.playerId] = playerResult.totalScore;
-        }
-
         function showQuestionResults() {
-            if (!gameState.host) return;
+            if (!gameState.host || gameState.status !== 'results') return;
             showScreen('screen-host-results');
-            document.getElementById('results-title').textContent = `📊 Resultado Pregunta ${gameState.currentQuestion + 1}`;
-            const sorted = Object.keys(gameState.scores).map(pid => ({ name: gameState.players[pid].name, score: gameState.scores[pid] })).sort((a, b) => b.score - a.score);
-            document.getElementById('leaderboard-list').innerHTML = sorted.map((p, i) => `<div class="leaderboard-item" style="animation-delay: ${i * 0.1}s"><div class="rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1)}</div><div class="player-name-lb">${p.name}</div><div class="player-score-lb">${p.score} pts</div></div>`).join('');
-            const isLast = gameState.currentQuestion >= gameState.questions.length - 1;
-            document.getElementById('btn-next').textContent = isLast ? '🏆 Ver Resultados Finales' : 'Siguiente Pregunta →';
+            document.getElementById('results-title').textContent = `📊 Resultado pregunta ${gameState.currentQuestion + 1}`;
+            renderLeaderboard('leaderboard-list', rankedPlayers());
+            document.getElementById('btn-next').textContent = gameState.currentQuestion >= gameState.questions.length - 1 ?
+                '🏆 Ver resultados finales' : 'Siguiente pregunta →';
         }
 
         async function nextQuestion() {
-            gameState.currentQuestion++;
-            if (gameState.currentQuestion >= gameState.questions.length) {
-                showFinalResults();
-            } else {
-                Object.keys(gameState.players).forEach(pid => { gameState.players[pid].lastAnswer = undefined; });
-                try { await db.ref('rooms/' + gameState.roomCode + '/answers').remove(); } catch(e) {}
-                await gameRef.update({ status: 'playing', currentQuestion: gameState.currentQuestion, startTime: Date.now() });
-                showQuestion();
-            }
+            if (!gameState.host || gameState.busy || gameState.status !== 'results') return;
+            const next = gameState.currentQuestion + 1;
+            if (next >= gameState.questions.length) await showFinalResults();
+            else await publishQuestion(next);
         }
 
         async function showFinalResults() {
-            if (gameState.host) {
+            if (!gameState.host || gameState.busy || !checkConnection()) return;
+            gameState.busy = true;
+            try {
+                const ranking = rankedPlayers();
+                await roomRef.update({ status: 'finished', 'game/status': 'finished', 'game/leaderboard': ranking });
+                gameState.status = 'finished';
+                clearInterval(gameState.timerInterval);
+                clearTimeout(gameState.resultTimeout);
+                renderLeaderboard('final-leaderboard', ranking);
                 showScreen('screen-host-final');
-                const sorted = Object.keys(gameState.scores).map(pid => ({ name: gameState.players[pid].name, score: gameState.scores[pid] })).sort((a, b) => b.score - a.score);
-                document.getElementById('final-leaderboard').innerHTML = sorted.map((p, i) => `<div class="leaderboard-item" style="animation-delay: ${i * 0.15}s"><div class="rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1)}</div><div class="player-name-lb">${p.name}</div><div class="player-score-lb">${p.score} pts</div></div>`).join('');
-                if (sorted.length > 0) launchConfetti();
-                try { await gameRef.update({ status: 'finished' }); } catch(e) {}
-                setTimeout(() => { db.ref('rooms/' + gameState.roomCode).remove(); }, 300000);
+                if (ranking.length) launchConfetti();
+                // Se captura esta sala para no borrar una partida posterior.
+                const finishedRoom = roomRef;
+                setTimeout(() => finishedRoom.remove().catch(console.error), 300000);
+            } catch (error) {
+                showDatabaseError(error);
+            } finally {
+                gameState.busy = false;
             }
         }
 
-        function resetGame() {
+        function cleanupListeners() {
             clearInterval(gameState.timerInterval);
-            gameState.currentQuestion = 0; gameState.scores = {}; gameState.players = {}; gameState.roomCode = ''; gameState.gameStarted = false;
-            if (playersRef) playersRef.off(); if (answersRef) answersRef.off(); if (gameRef) gameRef.off();
+            clearTimeout(gameState.resultTimeout);
+            if (playersRef) playersRef.off();
+            if (answersRef) answersRef.off();
+            if (gameRef) gameRef.off();
+            roomRef = playersRef = answersRef = gameRef = null;
+        }
+
+        function resetGame() {
+            cleanupListeners();
+            gameState = newGameState();
+            document.querySelectorAll('.topic-btn').forEach(button => button.classList.remove('selected'));
+            clearMessage();
             showScreen('screen-main');
         }
 
         function updatePlayerCount() {
             const count = Object.keys(gameState.players).length;
-            const el = document.getElementById('player-count-waiting') || document.getElementById('player-count-game');
-            if (el) el.textContent = `👥 ${count} jugador${count !== 1 ? 'es' : ''}`;
+            ['player-count-waiting', 'player-count-game'].forEach(id => {
+                document.getElementById(id).textContent = `👥 ${count} jugador${count !== 1 ? 'es' : ''}`;
+            });
         }
 
         function updateWaitingPlayers() {
             const list = document.getElementById('waiting-players-list');
-            const names = Object.values(gameState.players).map(p => p.name);
-            list.innerHTML = names.map(n => `<div class="player-chip">${n}</div>`).join('');
+            list.replaceChildren();
+            Object.values(gameState.players).forEach(player => {
+                const chip = document.createElement('div');
+                chip.className = 'player-chip';
+                chip.textContent = player.name;
+                list.appendChild(chip);
+            });
             updatePlayerCount();
         }
+
+        function generateQR() {
+            const canvas = document.getElementById('qr-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, 200, 200);
+            const info = document.getElementById('join-link-info');
+            if (!/^https?:$/.test(window.location.protocol)) {
+                info.textContent = 'Para compartir por QR, publica este archivo y abre su dirección web.';
+                canvas.style.display = 'none';
+                return;
+            }
+            const url = new URL(window.location.href);
+            url.searchParams.set('room', gameState.roomCode);
+            url.hash = '';
+            info.textContent = url.href;
+            canvas.style.display = 'block';
+            try {
+                const qrDiv = document.createElement('div');
+                new QRCode(qrDiv, { text: url.href, width: 180, height: 180, colorDark: '#1a0533',
+                    colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+                const qrCanvas = qrDiv.querySelector('canvas');
+                if (qrCanvas) ctx.drawImage(qrCanvas, 10, 10, 180, 180);
+            } catch (error) {
+                canvas.style.display = 'none';
+                console.error('No se pudo generar el QR:', error);
+            }
+        }
+
+
 
         function launchConfetti() {
             const container = document.getElementById('confetti-container');
@@ -1015,19 +1324,7 @@
             }
         }
 
-        function generateQR() {
-            const canvas = document.getElementById('qr-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = 'white'; ctx.fillRect(0, 0, 200, 200);
-            try {
-                const qrDiv = document.createElement('div');
-                new QRCode(qrDiv, { text: window.location.href, width: 180, height: 180, colorDark: '#1a0533', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
-                setTimeout(() => {
-                    const qrCanvas = qrDiv.querySelector('canvas');
-                    if (qrCanvas) ctx.drawImage(qrCanvas, 10, 10, 180, 180);
-                }, 100);
-            } catch(e) {}
-        }
+
 
         function shuffleArray(array) {
             const arr = [...array];
@@ -1036,6 +1333,11 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+        const roomFromLink = new URLSearchParams(window.location.search).get('room');
+        if (roomFromLink && /^[A-Z0-9]{5}$/i.test(roomFromLink)) {
+            document.getElementById('join-code-input').value = roomFromLink.toUpperCase();
+            showScreen('screen-join');
         }
     </script>
 </body>
