@@ -368,6 +368,7 @@
     <div class="confetti-container" id="confetti-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="./preguntas.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <script>
@@ -485,157 +486,13 @@
 
 
         // ==================== 20 PREGUNTAS ORGANIZADAS ====================
-        const allQuestions = {
-            tema1: [
-                {
-                    question: "¿Un trabajador lesionado en la vía pública por su propia negligencia (ej. cruzar distraído mirando el celular) pierde el derecho a la licencia paga por enfermedad inculpable (Art. 208 LCT)?",
-                    answers: ["Sí, la negligencia grave extingue la obligación patronal", "No, el régimen cubre imprudencia o negligencia; el único límite es el dolo", "Sí, salvo que el accidente ocurra durante la jornada", "No, pero la ley reduce automáticamente su remuneración al 50%"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! El régimen de enfermedades inculpables responde incluso ante culpa o culpa grave del trabajador (imprudencia o negligencia). El derecho a cobro únicamente cesa si se prueba dolo (provocación intencional de la lesión o fraude).",
-                    explanationWrong: "❌ La respuesta correcta es la B. La negligencia del trabajador no elimina el derecho a la licencia paga; solo el dolo (intención de provocar la lesión) excluye la cobertura."
-                },
-                {
-                    question: "Un empleado con 4 años y 11 meses de antigüedad cae enfermo por un tratamiento de 3 meses. Durante el transcurso de la licencia cumple los 5 años en la empresa. ¿Cuál es su tope máximo de licencia paga (sin cargas de familia)?",
-                    answers: ["3 meses, porque la antigüedad se congela al inicio", "6 meses, pues la remuneración se devenga día a día y al superar los 5 años se amplía el tope", "12 meses, por aplicación del principio in dubio pro operario", "Pierde la licencia paga de inmediato debiendo pasar a reserva de puesto"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Excelente! Como la licencia se devenga día a día, si el trabajador alcanza los 5 años de antigüedad durante su transcurso, el plazo máximo legal se amplía de 3 a 6 meses conforme al Art. 208 LCT.",
-                    explanationWrong: "❌ La respuesta es 6 meses. La antigüedad no se congela; si durante la licencia el trabajador cumple 5 años, se amplía el plazo automáticamente."
-                },
-                {
-                    question: "A los efectos de duplicar los plazos máximos de licencia paga del Artículo 208 LCT, ¿se considera el 'hijo por nacer' como carga de familia?",
-                    answers: ["No, la carga de familia requiere el nacimiento con vida", "Sí, la jurisprudencia considera el embarazo como carga de familia", "Solo si el empleador otorga conformidad previa por escrito", "Únicamente en contratos que superen los 10 años de antigüedad"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! La jurisprudencia mayoritaria aplica de forma amplia el concepto de familia (Art. 11 LCT), determinando que el embarazo (hijo por nacer) constituye carga de familia y duplica los plazos de licencia.",
-                    explanationWrong: "❌ La respuesta es SÍ. El embarazo se considera carga de familia desde la concepción, duplicando los plazos de licencia según jurisprudencia consolidada."
-                },
-                {
-                    question: "¿Qué ocurre con el plazo máximo de licencia paga si un trabajador sufre dos accidentes inculpables totalmente distintos e independientes con un mes de diferencia?",
-                    answers: ["Se agotan y acumulan dentro del mismo tope anual", "Se reinicia el cómputo del plazo máximo por tratarse de afecciones independientes", "Pasa automáticamente a la reserva de puesto sin goce de sueldo", "El segundo evento debe ser cubierto obligatoriamente por la ART"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Muy bien! El tope del Art. 208 LCT (3, 6 u 12 meses) se otorga por 'cada enfermedad o accidente'. Si ocurre un nuevo evento independiente, se reinicia un nuevo período máximo de licencia paga.",
-                    explanationWrong: "❌ Cada accidente o enfermedad independiente reinicia el plazo máximo. No se acumulan si son eventos distintos y no relacionados."
-                },
-                {
-                    question: "En el caso de recidivas de enfermedades crónicas, ¿cuándo se reinicia el plazo máximo de licencia remunerada según el Art. 208 LCT?",
-                    answers: ["A los 6 meses exactos desde el primer diagnóstico", "Transcurridos 2 años desde la manifestación de la patología", "Se reinicia automáticamente cada 1° de enero", "Nunca; las patologías crónicas solo otorgan un único plazo"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! Las recaídas o recidivas de una misma enfermedad crónica no se consideran una nueva enfermedad, salvo que se manifiesten transcurridos 2 años desde la manifestación previa (Art. 208 LCT).",
-                    explanationWrong: "❌ Las recidivas solo reinician el plazo si pasan 2 años desde la manifestación anterior. Si es antes, se considera la misma enfermedad."
-                }
-            ],
-            tema2: [
-                {
-                    question: "Bajo el Artículo 209 de la LCT, ¿en qué plazo debe el trabajador notificar su enfermedad o accidente e indicar el lugar exacto en que se encuentra?",
-                    answers: ["Dentro de las 48 horas posteriores al primer síntoma", "En el transcurso de la primera jornada de trabajo respecto de la cual esté imposibilitado de concurrir", "Al finalizar la semana laboral en la que se produjeron las inasistencias", "En el momento en que se emita el certificado médico definitivo"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! El Art. 209 exige dar aviso en la primera jornada de trabajo a la que no pueda asistir, informando el lugar de reposo para permitir el control médico patronal (Art. 210).",
-                    explanationWrong: "❌ El aviso debe darse en la PRIMERA jornada que el trabajador no pueda asistir, no después. Es fundamental para habilitar el control médico."
-                },
-                {
-                    question: "Tras la Reforma de Modernización Laboral (Ley 27.802 de 2026), ¿qué debe acreditar el trabajador si omitió dar aviso a tiempo para no perder el salario?",
-                    answers: ["Una declaración jurada ratificada ante escribano público", "Inequívocamente la imposibilidad de dar aviso dada la fuerza mayor o gravedad", "El consentimiento verbal previo del delegado del sector", "Nada; la omisión de aviso nunca genera la pérdida del derecho al cobro"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! La Ley 27.802 especificó que la pérdida del salario por falta de aviso solo se excepciona si la enfermedad/accidente y la imposibilidad de avisar resultan 'inequívocamente acreditadas'.",
-                    explanationWrong: "❌ El trabajador debe probar de forma inequívoca que no pudo avisar por fuerza mayor o gravedad. No es automático."
-                },
-                {
-                    question: "Si un trabajador sufre una enfermedad inculpable durante sus vacaciones anuales y notifica fehacientemente al empleador en tiempo y forma, ¿qué sucede?",
-                    answers: ["Las vacaciones continúan transcurriendo normalmente", "Se interrumpen las vacaciones, cobrando licencia por enfermedad y reservando los días no gozados", "Se extinguen definitivamente los días de vacaciones restantes", "El contrato se rescinde inmediatamente por imposibilidad objetiva"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! El aviso oportuno por enfermedad durante el receso interrumpe las vacaciones. El trabajador pasa a cobrar la licencia paga del Art. 208 y conserva los días de vacaciones pendientes (Art. 154 LCT).",
-                    explanationWrong: "❌ Las vacaciones se INTERRUMPEN (no se pierden). El trabajador cobra licencia por enfermedad y puede reprogramar sus vacaciones después."
-                },
-                {
-                    question: "Si existe discrepancia entre el médico del trabajador y el médico de control del empleador (Art. 210 LCT), ¿es obligatoria la junta médica?",
-                    answers: ["Sí, es un trámite administrativo obligatorio previo a cualquier reclamo", "No; la ley indica que 'se podrá recurrir', siendo un medio probatorio optativo", "Sí, y el dictamen resultante es vinculante e inimpugnable", "No; la opinión del médico de la empresa prevalece automáticamente"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Muy bien! La norma modificada por la Ley 27.802 establece que ante discrepancia 'se podrá recurrir' a junta médica. Es optativo y su resultado es una prueba más a evaluar por el juez.",
-                    explanationWrong: "❌ La junta médica NO es obligatoria. Es una opción probatoria que las partes pueden utilizar, pero el juez evalúa libremente todas las pruebas."
-                },
-                {
-                    question: "Conforme a la Reforma 2026 (Ley 27.802), ¿cuál de los siguientes requisitos NO forma parte de la validez del certificado médico?",
-                    answers: ["Firma digital emitida a través de plataformas electrónicas autorizadas", "Inclusión explícita del diagnóstico médico, tratamiento y días de reposo", "Homologación y visado previo obligatorio por la SRT y el Ministerio de Trabajo", "Emisión por profesional médico habilitado en el territorio nacional"],
-                    correct: 2,
-                    explanationCorrect: "✅ ¡Correcto! La Ley 27.802 exige diagnóstico, tratamiento, días de reposo, firma digital (Ley 27.553) y médico habilitado. NO exige visado ni homologación del Ministerio de Trabajo o SRT.",
-                    explanationWrong: "❌ El certificado médico NO requiere homologación ministerial. Solo necesita: diagnóstico, tratamiento, días de reposo, firma digital y médico habilitado."
-                }
-            ],
-            tema3: [
-                {
-                    question: "Bajo la Ley de Protección de Datos Personales (Ley 25.326), ¿está el trabajador obligado a detallar su diagnóstico médico en el telegrama de aviso laboral?",
-                    answers: ["Sí, la omisión del diagnóstico invalida jurídicamente la notificación", "No; el diagnóstico es un dato sensible resguardado por el secreto profesional", "Solo si la empresa cuenta con más de 100 empleados registrados", "Sí, salvo que se trate de afecciones respiratorias o virales menores"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! Los datos de salud son 'datos sensibles' (Ley 25.326). El trabajador no está obligado a revelar públicamente su diagnóstico en el telegrama; este debe ser verificado por el médico de control bajo secreto profesional.",
-                    explanationWrong: "❌ El trabajador NO debe revelar el diagnóstico en el aviso. Los datos de salud son sensibles y protegidos; solo el médico de control accede al diagnóstico bajo secreto profesional."
-                },
-                {
-                    question: "Durante el período de reserva de puesto de trabajo (Art. 211 LCT), ¿cuál es la situación del trabajador respecto de la remuneración y la obra social?",
-                    answers: ["Percibe el 50% de la remuneración habitual y mantiene la obra social", "No percibe salario, pero conserva la cobertura de la obra social", "Cobra el 100% del sueldo pero pierde de inmediato la afiliación a la obra social", "No percibe salario ni conserva ningún beneficio o cobertura médica"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! La reserva de puesto (1 año tras agotar la licencia paga) suspende el pago de salarios, pero mantiene vigente el contrato de trabajo y los beneficios de la obra social (Art. 211 LCT).",
-                    explanationWrong: "❌ En la reserva de puesto NO se cobra salario, pero SÍ se mantiene la obra social. El contrato sigue vigente aunque sin remuneración."
-                },
-                {
-                    question: "¿Cómo opera la extinción del contrato de trabajo una vez vencido el año de reserva de puesto (Art. 211 LCT)?",
-                    answers: ["Se extingue automáticamente de pleno derecho al cumplirse el día 365", "Requiere que alguna de las partes rescinda expresamente notificando a la otra; no genera indemnización", "Obliga al empleador a abonar la indemnización por despido incausado del Art. 245", "Exige dictamen previo firme expedido por la Comisión Médica Previsional"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! Vencido el año de reserva de puesto, el contrato subsiste hasta que cualquiera de las partes decida y notifique la voluntad de rescindirlo. Dicha extinción exime de responsabilidad indemnizatoria.",
-                    explanationWrong: "❌ El contrato NO se extingue automáticamente. Alguna de las partes debe notificar la rescisión, y no genera indemnización por ser una extinción sin causa imputable."
-                },
-                {
-                    question: "Si el trabajador queda con una incapacidad parcial definitiva y el empleador demuestra objetivamente que NO tiene tareas livianas compatibles, ¿qué indemnización corresponde?",
-                    answers: ["Ninguna, el vínculo se disuelve sin compensación por fuerza mayor", "La indemnización reducida del Artículo 247 LCT (50% de la indemnización por despido)", "La indemnización duplicada del Artículo 245 bis por despido discriminatorio", "La indemnización completa del Artículo 245 más dos años de salarios caídos"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! Si el empleador demuestra que no puede asignar tareas acordes por causas que no le son imputables, el contrato se extingue abonando la indemnización reducida del Art. 247 LCT (Art. 212 2° párrafo).",
-                    explanationWrong: "❌ Corresponde la indemnización REDUCIDA del Art. 247 (50% del despido), si el empleador prueba objetivamente que no tiene tareas livianas disponibles."
-                },
-                {
-                    question: "Si un empleador alega falsamente no tener tareas livianas para desvincular a un trabajador con incapacidad parcial, ¿qué consecuencia jurídica enfrenta?",
-                    answers: ["Queda eximido abonando únicamente la indemnización reducida del Art. 247", "Deberá pagar la indemnización plena del Art. 245 y eventualmente indemnización por despido discriminatorio", "Sufre únicamente un apercibimiento administrativo del Ministerio de Trabajo", "El contrato se convierte en un plazo fijo suspendido indefinidamente"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! Si se prueba en juicio que el empleador disponía de tareas livianas y mintió para no asignarlas, se aplica el 3° párrafo del Art. 212 LCT (indemnización del Art. 245) y se activa la tutela contra el despido discriminatorio.",
-                    explanationWrong: "❌ Si el empleador miente sobre no tener tareas livianas, debe pagar la indemnización COMPLETA del Art. 245 (despido incausado) y puede enfrentar claims por despido discriminatorio."
-                }
-            ],
-            tema4: [
-                {
-                    question: "¿Cuándo se presume jurídicamente configurada la incapacidad absoluta que da lugar al pago del Art. 212 (4° párrafo) LCT?",
-                    answers: ["Cuando la invalidez produce una disminución en la capacidad laborativa del 66% o más", "Solo cuando alcanza el 100% de incapacidad y requiere asistencia permanente", "Cuando el trabajador cumple los 65 años de edad en el transcurso de la licencia", "En cualquier enfermedad que requiera una inasistencia superior a los 90 días corridos"],
-                    correct: 0,
-                    explanationCorrect: "✅ ¡Correcto! La doctrina laboral y previsional (Art. 48 Ley 24.241) presume que la incapacidad es total/absoluta cuando la disminución laborativa sea igual o superior al 66%.",
-                    explanationWrong: "❌ La incapacidad absoluta se presume desde el 66% de disminución laborativa, no requiere el 100%. Es el estándar de la seguridad social argentina."
-                },
-                {
-                    question: "Si la enfermedad o accidente inculpable deriva en incapacidad absoluta para el trabajador, ¿qué indemnización debe abonar el empleador según el Art. 212 LCT?",
-                    answers: ["La indemnización reducida equivalente al Artículo 247 LCT", "Una indemnización de monto igual a la establecida en el Artículo 245 LCT", "Ninguna, la prestación económica recae de forma exclusiva sobre la ANSES", "Un subsidio mensual de salario mínimo vital y móvil durante 12 meses"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! El 4° párrafo del Art. 212 LCT dispone que ante incapacidad absoluta, el empleador debe abonar una indemnización equivalente a la del Art. 245 LCT. Este beneficio es acumulable con prestaciones de la seguridad social.",
-                    explanationWrong: "❌ Ante incapacidad absoluta (66% o más), el empleador debe pagar la indemnización COMPLETA del Art. 245 (como si fuera despido incausado), acumulable con beneficios de ANSES."
-                },
-                {
-                    question: "¿Qué dispone el Artículo 213 de la LCT si el empleador despide sin justa causa al trabajador durante la licencia paga por enfermedad inculpable?",
-                    answers: ["El despido es nulo de pleno derecho obligando a la reincorporación inmediata", "Debe abonar las indemnizaciones por despido incausado MÁS los salarios del tiempo que faltare para el alta o vencimiento", "Se aplica una reducción del 50% en las indemnizaciones por rescisión anticipada", "Solo se abona el preaviso y la integración del mes de despido"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! El Art. 213 LCT establece la sanción por despido en período de licencia paga: el empleador debe pagar las indemnizaciones por despido incausado completas MÁS los salarios caídos hasta el alta médica o el fin de la licencia.",
-                    explanationWrong: "❌ El despido durante licencia paga genera una sanción: indemnización por despido + TODOS los salarios que faltan hasta el alta o fin de la licencia. Es una protección reforzada."
-                },
-                {
-                    question: "Para liquidar los salarios de licencia por enfermedad de un trabajador con remuneraciones variables (ej. comisiones), ¿qué norma fija el Art. 208 LCT?",
-                    answers: ["Se toma únicamente la comisión obtenida en el último mes trabajado", "Se calcula un promedio de lo percibido en el último semestre (últimos 6 meses)", "Se abona exclusivamente el sueldo básico de convenio sin adicionales", "Se toma la comisión más alta de los últimos 2 años sin promediar"],
-                    correct: 1,
-                    explanationCorrect: "✅ ¡Correcto! El Art. 208 LCT establece que las remuneraciones variables se liquidarán según el promedio de lo percibido en el último semestre de prestación de servicios.",
-                    explanationWrong: "❌ Las remuneraciones variables (comisiones, horas extras, etc.) se promedian sobre los ÚLTIMOS 6 MESES trabajados, no solo el último mes."
-                },
-                {
-                    question: "Si un trabajador se encuentra cumpliendo una suspensión disciplinaria o económica y sobreviene una enfermedad inculpable, ¿qué ocurre con el cobro salarial?",
-                    answers: ["La enfermedad suspende la sanción/medida y el trabajador recupera el derecho a percibir remuneración", "Mantiene la suspensión sin goce de sueldo hasta que venza el plazo disciplinario", "El contrato se rescinde por injuria laboral concurrente", "Se reducen automáticamente a la mitad los plazos máximos de licencia paga"],
-                    correct: 0,
-                    explanationCorrect: "✅ ¡Correcto! El último párrafo del Art. 208 LCT establece que las suspensiones por causas económicas o disciplinarias no afectan el derecho a cobrar salarios por enfermedad, prevaleciendo el derecho a la remuneración por la licencia médica.",
-                    explanationWrong: "❌ La enfermedad inculpable PREVALECE sobre la suspensión. El trabajador deja de estar suspendido y pasa a cobrar la licencia por enfermedad."
-                }
-            ]
-        };
+        // Banco de preguntas externo
+const allQuestions = window.QUIZ_QUESTIONS;
 
+if (!allQuestions || Object.keys(allQuestions).length === 0) {
+    console.error("No se pudo cargar preguntas.js");
+    showMessage("Error: no se pudo cargar el banco de preguntas.");
+}
         // --- PERSISTENCIA DE PREGUNTAS ---
         function saveQuestionsToStorage() {
             const questions = collectCustomQuestions();
@@ -764,7 +621,59 @@
             }
         }
 
-        function loadTopic(topic, button) {
+        
+function loadTopic(topic, button) {
+    document.querySelectorAll('.topic-btn').forEach(b =>
+        b.classList.remove('selected')
+    );
+
+    if (button) button.classList.add('selected');
+
+    if (topic === 'todas') {
+        gameState.questions = Object.values(allQuestions).flat();
+    } else {
+        gameState.questions = [...(allQuestions[topic] || [])];
+    }
+
+    gameState.questions = shuffleArray(gameState.questions);
+
+    alert(
+        `✅ ${gameState.questions.length} preguntas cargadas y mezcladas aleatoriamente.`
+    );
+}
+
+// Genera los botones automáticamente desde preguntas.js.
+// Permite incorporar nuevos temas sin modificar index.html.
+function actualizarBotonesTemas() {
+    const contenedor = document.querySelector('.topic-selector');
+    if (!contenedor || !window.QUIZ_TOPICS) return;
+
+    contenedor.replaceChildren();
+
+    Object.entries(window.QUIZ_TOPICS).forEach(([id, tema]) => {
+        const boton = document.createElement('button');
+        boton.className = 'topic-btn';
+        boton.textContent =
+            `${tema.label} (${(allQuestions[id] || []).length} preguntas)`;
+
+        boton.onclick = () => loadTopic(id, boton);
+        contenedor.appendChild(boton);
+    });
+
+    const todos = document.createElement('button');
+    todos.className = 'topic-btn';
+
+    const cantidad = Object.values(allQuestions)
+        .reduce((total, preguntas) => total + preguntas.length, 0);
+
+    todos.textContent = `🎲 Todas (${cantidad} preguntas)`;
+    todos.onclick = () => loadTopic('todas', todos);
+
+    contenedor.appendChild(todos);
+}
+
+actualizarBotonesTemas();
+
             document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
             button.classList.add('selected');
             
