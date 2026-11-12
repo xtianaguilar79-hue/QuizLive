@@ -148,7 +148,6 @@
             color: rgba(255,255,255,0.5);
         }
 
-        /* Host Screen */
         .host-container {
             width: 100%;
             max-width: 1200px;
@@ -282,7 +281,6 @@
             opacity: 0.5;
         }
 
-        /* Player Screen */
         .player-container {
             width: 100%;
             max-width: 500px;
@@ -341,7 +339,6 @@
             border: 3px solid white;
         }
 
-        /* Leaderboard */
         .leaderboard {
             width: 100%;
             max-width: 600px;
@@ -402,7 +399,6 @@
             color: #ffd93d;
         }
 
-        /* Waiting animation */
         .waiting-dots {
             display: flex;
             gap: 8px;
@@ -420,7 +416,6 @@
         .waiting-dots span:nth-child(2) { animation-delay: 0.2s; }
         .waiting-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-        /* Player waiting screen */
         .player-waiting {
             text-align: center;
         }
@@ -431,7 +426,6 @@
             animation: pulse 2s infinite;
         }
 
-        /* Result feedback */
         .result-feedback {
             text-align: center;
             padding: 30px;
@@ -465,7 +459,6 @@
             line-height: 1.5;
         }
 
-        /* Progress bar */
         .progress-bar {
             width: 100%;
             max-width: 600px;
@@ -490,7 +483,6 @@
             margin-bottom: 10px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .logo { font-size: 2rem; }
             .room-code-value { font-size: 2.5rem; }
@@ -500,7 +492,6 @@
             .btn { padding: 12px 30px; font-size: 1rem; }
         }
 
-        /* Confetti */
         .confetti-container {
             position: fixed;
             top: 0;
@@ -519,7 +510,6 @@
             animation: confettiFall 3s ease-in forwards;
         }
 
-        /* QR Info */
         .join-info {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -540,7 +530,6 @@
             font-size: 1.1rem;
         }
 
-        /* Custom question editor */
         .editor-container {
             width: 100%;
             max-width: 700px;
@@ -695,8 +684,13 @@
 
     <!-- SCREEN: Main Menu -->
     <div id="screen-main" class="screen active">
-        <div class="logo">🎮 QuizLive</div>
+        <div class="logo"> QuizLive</div>
         <p class="subtitle">Juego interactivo de preguntas y respuestas en tiempo real</p>
+        
+        <div class="firebase-status connected" id="firebase-status">
+            ✅ Conectado a Firebase
+        </div>
+
         <button class="btn btn-primary" onclick="showScreen('screen-host-setup')">🖥️ Crear Partida (Profesor)</button>
         <button class="btn btn-secondary" onclick="showScreen('screen-join')">📱 Unirse como Alumno</button>
     </div>
@@ -714,9 +708,9 @@
             <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px;">
                 <button class="btn btn-primary btn-small" onclick="loadPreset('ciencia')">🔬 Ciencia</button>
                 <button class="btn btn-primary btn-small" onclick="loadPreset('historia')">📜 Historia</button>
-                <button class="btn btn-primary btn-small" onclick="loadPreset('mates')">🔢 Matemáticas</button>
+                <button class="btn btn-primary btn-small" onclick="loadPreset('mates')"> Matemáticas</button>
                 <button class="btn btn-primary btn-small" onclick="loadPreset('geografia')">🌍 Geografía</button>
-                <button class="btn btn-primary btn-small" onclick="loadPreset('cultura')">🎭 Cultura General</button>
+                <button class="btn btn-primary btn-small" onclick="loadPreset('cultura')"> Cultura General</button>
             </div>
         </div>
 
@@ -865,7 +859,44 @@
     <div class="confetti-container" id="confetti-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <script>
+        // ==================== FIREBASE CONFIGURATION ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2aL5vG8ZxPvoYXi7fkz1RQGkcQI9Xnw4",
+            authDomain: "quizlive-juego.firebaseapp.com",
+            databaseURL: "https://quizlive-juego-default-rtdb.firebaseio.com",
+            projectId: "quizlive-juego",
+            storageBucket: "quizlive-juego.firebasestorage.app",
+            messagingSenderId: "392706495502",
+            appId: "1:392706495502:web:3db546e83589a981cb185f"
+        };
+
+        let db = null;
+        let firebaseInitialized = false;
+
+        // Initialize Firebase
+        function initializeFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.database();
+                firebaseInitialized = true;
+                console.log('✅ Firebase initialized successfully');
+            } catch(e) {
+                console.error(' Firebase init error:', e);
+                firebaseInitialized = false;
+            }
+        }
+
+        // Initialize on load
+        initializeFirebase();
+
         // ==================== GAME STATE ====================
         let gameState = {
             roomCode: '',
@@ -881,29 +912,11 @@
             scores: {}
         };
 
-        // BroadcastChannel for communication between tabs
-        let channel;
-        try {
-            channel = new BroadcastChannel('quizlive_channel');
-            channel.onmessage = handleChannelMessage;
-        } catch(e) {
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'quizlive_message' && e.newValue) {
-                    try {
-                        handleChannelMessage({ data: JSON.parse(e.newValue) });
-                    } catch(err) {}
-                }
-            });
-        }
-
-        function sendMessage(msg) {
-            try {
-                channel.postMessage(msg);
-            } catch(e) {}
-            try {
-                localStorage.setItem('quizlive_message', JSON.stringify({...msg, _time: Date.now()}));
-            } catch(e) {}
-        }
+        // Firebase listeners
+        let roomRef = null;
+        let playersRef = null;
+        let answersRef = null;
+        let gameRef = null;
 
         // ==================== PRESET QUESTIONS WITH EXPLANATIONS ====================
         const presetQuestions = {
@@ -933,7 +946,7 @@
                     question: "¿Cuál es el elemento químico más abundante en el universo?", 
                     answers: ["Oxígeno", "Carbono", "Helio", "Hidrógeno"], 
                     correct: 3,
-                    explanationCorrect: "¡Muy bien! ⭐ El hidrógeno es el elemento más abundante en el universo, representando aproximadamente el 75% de toda la materia visible. Es el combustible principal de las estrellas.",
+                    explanationCorrect: "¡Muy bien!  El hidrógeno es el elemento más abundante en el universo, representando aproximadamente el 75% de toda la materia visible. Es el combustible principal de las estrellas.",
                     explanationWrong: "La respuesta correcta es Hidrógeno. Representa aproximadamente el 75% de toda la materia visible en el universo y es el combustible principal de las estrellas."
                 },
                 { 
@@ -963,7 +976,7 @@
                     question: "¿En qué año comenzó la Segunda Guerra Mundial?", 
                     answers: ["1935", "1939", "1941", "1945"], 
                     correct: 1,
-                    explanationCorrect: "¡Correcto! ⚔️ La Segunda Guerra Mundial comenzó el 1 de septiembre de 1939 cuando Alemania invadió Polonia. Terminó en 1945.",
+                    explanationCorrect: "¡Correcto! ️ La Segunda Guerra Mundial comenzó el 1 de septiembre de 1939 cuando Alemania invadió Polonia. Terminó en 1945.",
                     explanationWrong: "La respuesta correcta es 1939. La guerra comenzó el 1 de septiembre de 1939 con la invasión alemana a Polonia y terminó en 1945."
                 },
                 { 
@@ -1000,7 +1013,7 @@
                     question: "¿Cuántos grados tiene un triángulo?", 
                     answers: ["360°", "180°", "270°", "90°"], 
                     correct: 1,
-                    explanationCorrect: "¡Correcto! 📐 La suma de los ángulos internos de cualquier triángulo siempre es 180°. Esto es fundamental en geometría.",
+                    explanationCorrect: "¡Correcto!  La suma de los ángulos internos de cualquier triángulo siempre es 180°. Esto es fundamental en geometría.",
                     explanationWrong: "La respuesta correcta es 180°. La suma de los ángulos internos de cualquier triángulo siempre es 180°, sin importar su forma o tamaño."
                 },
                 { 
@@ -1023,21 +1036,21 @@
                     question: "¿Cuál es el río más largo del mundo?", 
                     answers: ["Nilo", "Amazonas", "Misisipi", "Yangtsé"], 
                     correct: 1,
-                    explanationCorrect: "¡Correcto! 🌊 El Amazonas es considerado el río más largo del mundo con aproximadamente 7,062 km, aunque hay debate con el Nilo.",
+                    explanationCorrect: "¡Correcto!  El Amazonas es considerado el río más largo del mundo con aproximadamente 7,062 km, aunque hay debate con el Nilo.",
                     explanationWrong: "La respuesta correcta es el Amazonas. Con aproximadamente 7,062 km, es considerado el río más largo del mundo, aunque algunos estudios debaten si es el Nilo."
                 },
                 { 
                     question: "¿Cuál es el país más grande del mundo?", 
                     answers: ["China", "Canadá", "Rusia", "EE.UU."], 
                     correct: 2,
-                    explanationCorrect: "¡Excelente! 🇷🇺 Rusia es el país más grande del mundo con 17.1 millones de km², cubriendo once zonas horarias diferentes.",
+                    explanationCorrect: "¡Excelente! 🇺 Rusia es el país más grande del mundo con 17.1 millones de km², cubriendo once zonas horarias diferentes.",
                     explanationWrong: "La respuesta correcta es Rusia. Con 17.1 millones de km², es el país más grande del mundo, extendiéndose por once zonas horarias."
                 },
                 { 
                     question: "¿En qué continente está Egipto?", 
                     answers: ["Asia", "África", "Europa", "Oceanía"], 
                     correct: 1,
-                    explanationCorrect: "¡Correcto! 🌍 Egipto está ubicado en el noreste de África, aunque la península del Sinaí se extiende hacia Asia.",
+                    explanationCorrect: "¡Correcto!  Egipto está ubicado en el noreste de África, aunque la península del Sinaí se extiende hacia Asia.",
                     explanationWrong: "La respuesta correcta es África. Egipto está en el noreste de África, aunque una pequeña parte (la península del Sinaí) está en Asia."
                 },
                 { 
@@ -1051,7 +1064,7 @@
                     question: "¿Cuál es el océano más grande?", 
                     answers: ["Atlántico", "Índico", "Ártico", "Pacífico"], 
                     correct: 3,
-                    explanationCorrect: "¡Correcto! 🌊 El Océano Pacífico es el más grande, cubriendo más de 165 millones de km², que es más área que toda la tierra firme junta.",
+                    explanationCorrect: "¡Correcto!  El Océano Pacífico es el más grande, cubriendo más de 165 millones de km², que es más área que toda la tierra firme junta.",
                     explanationWrong: "La respuesta correcta es el Pacífico. Es el océano más grande, cubriendo más de 165 millones de km², más área que toda la tierra firme combinada."
                 }
             ],
@@ -1067,7 +1080,7 @@
                     question: "¿Cuántas cuerdas tiene una guitarra estándar?", 
                     answers: ["4", "5", "6", "7"], 
                     correct: 2,
-                    explanationCorrect: "¡Excelente! 🎸 Una guitarra estándar tiene 6 cuerdas, afinadas generalmente en Mi, La, Re, Sol, Si y Mi.",
+                    explanationCorrect: "¡Excelente!  Una guitarra estándar tiene 6 cuerdas, afinadas generalmente en Mi, La, Re, Sol, Si y Mi.",
                     explanationWrong: "La respuesta correcta es 6 cuerdas. Una guitarra estándar tiene 6 cuerdas afinadas en Mi, La, Re, Sol, Si y Mi."
                 },
                 { 
@@ -1111,7 +1124,6 @@
         }
 
         // ==================== CUSTOM QUESTION EDITOR ====================
-        let customQuestions = [];
         let editorCounter = 0;
 
         function addQuestionEditor() {
@@ -1194,7 +1206,12 @@
             event.target.style.border = '2px solid #6bcb77';
         }
 
-        function startGame() {
+        async function startGame() {
+            if (!firebaseInitialized) {
+                alert('⚠️ Firebase no está inicializado. Recarga la página.');
+                return;
+            }
+
             const customTab = document.getElementById('editor-custom').style.display !== 'none';
             if (customTab) {
                 const custom = collectCustomQuestions();
@@ -1214,17 +1231,67 @@
             gameState.players = {};
             gameState.scores = {};
 
-            localStorage.setItem(`quizlive_room_${gameState.roomCode}`, JSON.stringify({
-                active: true,
-                timestamp: Date.now()
-            }));
+            // Create room in Firebase
+            try {
+                roomRef = db.ref('rooms/' + gameState.roomCode);
+                playersRef = db.ref('rooms/' + gameState.roomCode + '/players');
+                answersRef = db.ref('rooms/' + gameState.roomCode + '/answers');
+                gameRef = db.ref('rooms/' + gameState.roomCode + '/game');
 
-            showScreen('screen-host-waiting');
-            document.getElementById('room-code-display').textContent = gameState.roomCode;
-            updatePlayerCount();
-            
-            // Generate QR code
-            setTimeout(generateQR, 300);
+                await roomRef.set({
+                    created: Date.now(),
+                    host: true,
+                    status: 'waiting',
+                    currentQuestion: 0,
+                    totalQuestions: gameState.questions.length
+                });
+
+                // Listen for players joining
+                playersRef.on('child_added', (snapshot) => {
+                    const player = snapshot.val();
+                    gameState.players[snapshot.key] = player;
+                    updateWaitingPlayers();
+                });
+
+                // Listen for answers
+                answersRef.on('child_added', (snapshot) => {
+                    const answer = snapshot.val();
+                    handlePlayerAnswer(answer.playerId, answer.answerIndex, answer.timeLeft);
+                });
+
+                // Listen for game state changes
+                gameRef.on('value', (snapshot) => {
+                    const gameData = snapshot.val();
+                    if (!gameData) return;
+                    
+                    if (gameData.status === 'playing' && gameState.host) {
+                        // Host controls the game
+                    } else if (gameData.status === 'playing' && !gameState.host) {
+                        // Player should see question
+                        if (document.getElementById('screen-player-waiting').classList.contains('active')) {
+                            showQuestion();
+                        }
+                    } else if (gameData.status === 'results' && !gameState.host) {
+                        // Show results to player
+                        handlePlayerResult(gameData);
+                    } else if (gameData.status === 'finished' && !gameState.host) {
+                        showScreen('screen-player-final');
+                        document.getElementById('player-final-score').textContent = `${gameState.scores[gameState.playerId] || 0} pts`;
+                        document.getElementById('player-final-emoji').textContent = '🎉';
+                        document.getElementById('player-final-text').textContent = '¡Juego Terminado!';
+                        document.getElementById('player-final-rank').textContent = '¡Gracias por jugar!';
+                    }
+                });
+
+                showScreen('screen-host-waiting');
+                document.getElementById('room-code-display').textContent = gameState.roomCode;
+                updatePlayerCount();
+                
+                setTimeout(generateQR, 300);
+            } catch(e) {
+                console.error('Error creating room:', e);
+                alert('❌ Error al crear la sala. Verifica tu conexión a Firebase.');
+            }
         }
 
         function generateRoomCode() {
@@ -1236,7 +1303,12 @@
             return code;
         }
 
-        function joinGame() {
+        async function joinGame() {
+            if (!firebaseInitialized) {
+                alert('️ Firebase no está inicializado. Recarga la página.');
+                return;
+            }
+
             const code = document.getElementById('join-code-input').value.trim().toUpperCase();
             const name = document.getElementById('join-name-input').value.trim();
             const errorEl = document.getElementById('join-error');
@@ -1247,43 +1319,79 @@
                 return;
             }
 
-            const roomData = localStorage.getItem(`quizlive_room_${code}`);
-            if (!roomData) {
-                errorEl.textContent = '❌ Código no encontrado. Verifica e intenta de nuevo.';
+            try {
+                // Check if room exists
+                const roomSnapshot = await db.ref('rooms/' + code).once('value');
+                if (!roomSnapshot.exists()) {
+                    errorEl.textContent = '❌ Código no encontrado. Verifica e intenta de nuevo.';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                const roomData = roomSnapshot.val();
+                if (roomData.status === 'finished') {
+                    errorEl.textContent = '❌ Esta partida ya terminó.';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                gameState.roomCode = code;
+                gameState.playerName = name;
+                gameState.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                gameState.host = false;
+                gameState.answered = false;
+
+                // Add player to room
+                await db.ref('rooms/' + code + '/players/' + gameState.playerId).set({
+                    name: name,
+                    joinedAt: Date.now(),
+                    score: 0
+                });
+
+                // Listen for game updates
+                const gameRefListener = db.ref('rooms/' + code + '/game');
+                gameRefListener.on('value', (snapshot) => {
+                    const gameData = snapshot.val();
+                    if (!gameData) return;
+                    
+                    if (gameData.status === 'playing' && gameState.currentQuestion !== gameData.currentQuestion) {
+                        gameState.currentQuestion = gameData.currentQuestion;
+                        showQuestion();
+                    } else if (gameData.status === 'results') {
+                        handlePlayerResult(gameData);
+                    } else if (gameData.status === 'finished') {
+                        showScreen('screen-player-final');
+                        document.getElementById('player-final-score').textContent = `${gameState.scores[gameState.playerId] || 0} pts`;
+                        document.getElementById('player-final-emoji').textContent = '';
+                        document.getElementById('player-final-text').textContent = '¡Juego Terminado!';
+                        document.getElementById('player-final-rank').textContent = '¡Gracias por jugar!';
+                    }
+                });
+
+                errorEl.style.display = 'none';
+                showScreen('screen-player-waiting');
+                document.getElementById('player-welcome').textContent = `¡Hola, ${name}! 🎉`;
+            } catch(e) {
+                console.error('Error joining game:', e);
+                errorEl.textContent = ' Error al unirse. Verifica el código.';
                 errorEl.style.display = 'block';
-                return;
             }
-
-            const room = JSON.parse(roomData);
-            if (!room.active) {
-                errorEl.textContent = '❌ Esta sala ya no está activa.';
-                errorEl.style.display = 'block';
-                return;
-            }
-
-            errorEl.style.display = 'none';
-            gameState.roomCode = code;
-            gameState.playerName = name;
-            gameState.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-            gameState.host = false;
-            gameState.answered = false;
-
-            sendMessage({
-                type: 'player_join',
-                roomCode: code,
-                playerId: gameState.playerId,
-                playerName: name
-            });
-
-            showScreen('screen-player-waiting');
-            document.getElementById('player-welcome').textContent = `¡Hola, ${name}! 🎉`;
         }
 
-        function startQuestions() {
+        async function startQuestions() {
             if (Object.keys(gameState.players).length === 0) {
-                if (!confirm('⚠️ No hay jugadores aún. ¿Iniciar solo?')) return;
+                if (!confirm('️ No hay jugadores aún. ¿Iniciar solo?')) return;
             }
+            
             gameState.currentQuestion = 0;
+            
+            // Update game state in Firebase
+            await gameRef.update({
+                status: 'playing',
+                currentQuestion: 0,
+                startTime: Date.now()
+            });
+            
             showQuestion();
         }
 
@@ -1367,23 +1475,42 @@
             }, 1000);
         }
 
-        function playerAnswer(answerIndex) {
+        async function playerAnswer(answerIndex) {
             if (gameState.answered) return;
             gameState.answered = true;
 
             document.querySelectorAll('.player-answer-btn').forEach(btn => btn.disabled = true);
             document.getElementById(`player-btn-${answerIndex}`).classList.add('selected');
 
-            sendMessage({
-                type: 'player_answer',
-                roomCode: gameState.roomCode,
-                playerId: gameState.playerId,
-                answer: answerIndex,
-                timeLeft: gameState.timeLeft
-            });
+            // Send answer to Firebase
+            try {
+                await db.ref('rooms/' + gameState.roomCode + '/answers/' + gameState.playerId).set({
+                    playerId: gameState.playerId,
+                    answerIndex: answerIndex,
+                    timeLeft: gameState.timeLeft,
+                    timestamp: Date.now()
+                });
+            } catch(e) {
+                console.error('Error sending answer:', e);
+            }
         }
 
-        function endQuestion() {
+        function handlePlayerAnswer(playerId, answerIndex, timeLeft) {
+            if (!gameState.host) return;
+            
+            if (gameState.players[playerId]) {
+                gameState.players[playerId].lastAnswer = answerIndex;
+                gameState.players[playerId].answerTime = timeLeft;
+                
+                if (gameState.answerCounts) {
+                    gameState.answerCounts[answerIndex]++;
+                    const countEl = document.getElementById(`answer-count-${answerIndex}`);
+                    if (countEl) countEl.textContent = gameState.answerCounts[answerIndex];
+                }
+            }
+        }
+
+        async function endQuestion() {
             clearInterval(gameState.timerInterval);
             const q = gameState.questions[gameState.currentQuestion];
 
@@ -1400,8 +1527,32 @@
 
                 document.getElementById('answer-status').textContent = '¡Tiempo! Mostrando resultados...';
 
+                // Calculate scores
+                calculateScores();
+
+                // Update Firebase with results
+                const results = {};
+                Object.keys(gameState.players).forEach(pid => {
+                    results[pid] = {
+                        correct: gameState.players[pid].lastCorrect,
+                        points: gameState.players[pid].lastPoints,
+                        totalScore: gameState.scores[pid] || 0
+                    };
+                });
+
+                try {
+                    await gameRef.update({
+                        status: 'results',
+                        results: results,
+                        correctAnswer: q.correct,
+                        explanationCorrect: q.explanationCorrect,
+                        explanationWrong: q.explanationWrong
+                    });
+                } catch(e) {
+                    console.error('Error updating results:', e);
+                }
+
                 setTimeout(() => {
-                    calculateScores();
                     showQuestionResults();
                 }, 2000);
             }
@@ -1418,6 +1569,9 @@
                         gameState.scores[pid] = (gameState.scores[pid] || 0) + points;
                         player.lastPoints = points;
                         player.lastCorrect = true;
+                        
+                        // Update player score in Firebase
+                        db.ref('rooms/' + gameState.roomCode + '/players/' + pid + '/score').set(gameState.scores[pid]);
                     } else {
                         player.lastPoints = 0;
                         player.lastCorrect = false;
@@ -1427,19 +1581,38 @@
                     player.lastCorrect = false;
                 }
             });
+        }
 
-            Object.keys(gameState.players).forEach(pid => {
-                sendMessage({
-                    type: 'question_result',
-                    roomCode: gameState.roomCode,
-                    playerId: pid,
-                    correct: gameState.players[pid].lastCorrect,
-                    points: gameState.players[pid].lastPoints,
-                    score: gameState.scores[pid] || 0,
-                    explanationCorrect: q.explanationCorrect,
-                    explanationWrong: q.explanationWrong
-                });
-            });
+        function handlePlayerResult(gameData) {
+            if (gameState.host) return;
+            
+            clearInterval(gameState.timerInterval);
+            showScreen('screen-player-result');
+            
+            const results = gameData.results;
+            const playerResult = results[gameState.playerId];
+            
+            if (!playerResult) return;
+            
+            const feedback = document.getElementById('player-result-feedback');
+            
+            if (playerResult.correct) {
+                feedback.innerHTML = `
+                    <div class="emoji">✅</div>
+                    <div class="text">¡Correcto!</div>
+                    <div class="points">+${playerResult.points} pts</div>
+                    <div class="explanation">${gameData.explanationCorrect}</div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="emoji">❌</div>
+                    <div class="text">Incorrecto</div>
+                    <div class="points" style="color:#ff6b6b;">0 pts</div>
+                    <div class="explanation">${gameData.explanationWrong}</div>
+                `;
+            }
+            
+            gameState.scores[gameState.playerId] = playerResult.totalScore;
         }
 
         function showQuestionResults() {
@@ -1466,22 +1639,36 @@
             }
 
             const isLast = gameState.currentQuestion >= gameState.questions.length - 1;
-            document.getElementById('btn-next').textContent = isLast ? '🏆 Ver Resultados Finales' : 'Siguiente Pregunta →';
+            document.getElementById('btn-next').textContent = isLast ? ' Ver Resultados Finales' : 'Siguiente Pregunta →';
         }
 
-        function nextQuestion() {
+        async function nextQuestion() {
             gameState.currentQuestion++;
             if (gameState.currentQuestion >= gameState.questions.length) {
                 showFinalResults();
             } else {
+                // Reset player last answers
                 Object.keys(gameState.players).forEach(pid => {
                     gameState.players[pid].lastAnswer = undefined;
                 });
+                
+                // Clear answers in Firebase
+                try {
+                    await db.ref('rooms/' + gameState.roomCode + '/answers').remove();
+                } catch(e) {}
+                
+                // Update game state
+                await gameRef.update({
+                    status: 'playing',
+                    currentQuestion: gameState.currentQuestion,
+                    startTime: Date.now()
+                });
+                
                 showQuestion();
             }
         }
 
-        function showFinalResults() {
+        async function showFinalResults() {
             if (gameState.host) {
                 showScreen('screen-host-final');
                 const sorted = Object.keys(gameState.scores)
@@ -1501,12 +1688,17 @@
                     launchConfetti();
                 }
 
-                sendMessage({
-                    type: 'game_over',
-                    roomCode: gameState.roomCode
-                });
+                // Update game state in Firebase
+                try {
+                    await gameRef.update({
+                        status: 'finished'
+                    });
+                } catch(e) {}
 
-                localStorage.removeItem(`quizlive_room_${gameState.roomCode}`);
+                // Clean up room after 5 minutes
+                setTimeout(() => {
+                    db.ref('rooms/' + gameState.roomCode).remove();
+                }, 300000);
             }
         }
 
@@ -1516,6 +1708,12 @@
             gameState.scores = {};
             gameState.players = {};
             gameState.roomCode = '';
+            
+            // Remove listeners
+            if (playersRef) playersRef.off();
+            if (answersRef) answersRef.off();
+            if (gameRef) gameRef.off();
+            
             showScreen('screen-main');
         }
 
@@ -1531,118 +1729,6 @@
             list.innerHTML = names.map(n => `<div class="player-chip">${n}</div>`).join('');
             updatePlayerCount();
         }
-
-        // ==================== CHANNEL MESSAGE HANDLER ====================
-        function handleChannelMessage(event) {
-            const msg = event.data;
-            if (!msg) return;
-
-            if (msg.roomCode !== gameState.roomCode && msg.type !== 'player_join') return;
-
-            switch (msg.type) {
-                case 'player_join':
-                    if (gameState.host && msg.roomCode === gameState.roomCode) {
-                        gameState.players[msg.playerId] = {
-                            name: msg.playerName,
-                            lastAnswer: undefined,
-                            answerTime: 0,
-                            lastCorrect: false,
-                            lastPoints: 0
-                        };
-                        gameState.scores[msg.playerId] = 0;
-                        updateWaitingPlayers();
-                        
-                        sendMessage({
-                            type: 'join_confirmed',
-                            roomCode: gameState.roomCode,
-                            playerId: msg.playerId
-                        });
-                    }
-                    break;
-
-                case 'join_confirmed':
-                    if (!gameState.host && msg.playerId === gameState.playerId) {
-                        console.log('Joined successfully!');
-                    }
-                    break;
-
-                case 'player_answer':
-                    if (gameState.host && msg.roomCode === gameState.roomCode) {
-                        if (gameState.players[msg.playerId]) {
-                            gameState.players[msg.playerId].lastAnswer = msg.answer;
-                            gameState.players[msg.playerId].answerTime = msg.timeLeft;
-                            
-                            if (gameState.answerCounts) {
-                                gameState.answerCounts[msg.answer]++;
-                                const countEl = document.getElementById(`answer-count-${msg.answer}`);
-                                if (countEl) countEl.textContent = gameState.answerCounts[msg.answer];
-                            }
-                        }
-                    }
-                    break;
-
-                case 'question_result':
-                    if (!gameState.host && msg.playerId === gameState.playerId) {
-                        clearInterval(gameState.timerInterval);
-                        showScreen('screen-player-result');
-                        const feedback = document.getElementById('player-result-feedback');
-                        const explanationEl = document.getElementById('player-explanation');
-                        
-                        if (msg.correct) {
-                            feedback.innerHTML = `
-                                <div class="emoji">✅</div>
-                                <div class="text">¡Correcto!</div>
-                                <div class="points">+${msg.points} pts</div>
-                                <div class="explanation">${msg.explanationCorrect}</div>
-                            `;
-                        } else {
-                            feedback.innerHTML = `
-                                <div class="emoji">❌</div>
-                                <div class="text">Incorrecto</div>
-                                <div class="points" style="color:#ff6b6b;">0 pts</div>
-                                <div class="explanation">${msg.explanationWrong}</div>
-                            `;
-                        }
-                    }
-                    break;
-
-                case 'game_over':
-                    if (!gameState.host && msg.roomCode === gameState.roomCode) {
-                        clearInterval(gameState.timerInterval);
-                        showScreen('screen-player-final');
-                        document.getElementById('player-final-score').textContent = `${gameState.scores[gameState.playerId] || 0} pts`;
-                        document.getElementById('player-final-emoji').textContent = '🎉';
-                        document.getElementById('player-final-text').textContent = '¡Juego Terminado!';
-                        document.getElementById('player-final-rank').textContent = '¡Gracias por jugar!';
-                    }
-                    break;
-
-                case 'game_start':
-                    if (!gameState.host && msg.roomCode === gameState.roomCode) {
-                        showQuestion();
-                    }
-                    break;
-
-                case 'next_question':
-                    if (!gameState.host && msg.roomCode === gameState.roomCode) {
-                        gameState.answered = false;
-                        showQuestion();
-                    }
-                    break;
-            }
-        }
-
-        const originalShowQuestion = showQuestion;
-        showQuestion = function() {
-            originalShowQuestion();
-            if (gameState.host) {
-                if (gameState.currentQuestion === 0) {
-                    sendMessage({ type: 'game_start', roomCode: gameState.roomCode });
-                } else {
-                    sendMessage({ type: 'next_question', roomCode: gameState.roomCode });
-                }
-            }
-        };
 
         // ==================== CONFETTI ====================
         function launchConfetti() {
@@ -1671,11 +1757,9 @@
             const canvas = document.getElementById('qr-canvas');
             const ctx = canvas.getContext('2d');
             
-            // Clear canvas
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, 200, 200);
             
-            // Generate QR using QRCode library
             try {
                 const qrDiv = document.createElement('div');
                 new QRCode(qrDiv, {
@@ -1687,13 +1771,11 @@
                     correctLevel: QRCode.CorrectLevel.H
                 });
                 
-                // Wait for QR to be generated
                 setTimeout(() => {
                     const qrCanvas = qrDiv.querySelector('canvas');
                     if (qrCanvas) {
                         ctx.drawImage(qrCanvas, 10, 10, 180, 180);
                     } else {
-                        // Fallback: draw a simple representation
                         drawSimpleQR(ctx);
                     }
                 }, 100);
@@ -1724,90 +1806,6 @@
             }
             return arr;
         }
-
-        // Demo mode
-        function addDemoPlayers() {
-            const demoNames = ['Ana', 'Carlos', 'María', 'Pedro', 'Lucía'];
-            demoNames.forEach((name, i) => {
-                const pid = `demo_${i}`;
-                gameState.players[pid] = {
-                    name: name,
-                    lastAnswer: undefined,
-                    answerTime: 0,
-                    lastCorrect: false,
-                    lastPoints: 0
-                };
-                gameState.scores[pid] = 0;
-            });
-            updateWaitingPlayers();
-        }
-
-        let demoTimeout;
-        function scheduleDemoPlayers() {
-            demoTimeout = setTimeout(() => {
-                if (gameState.host && Object.keys(gameState.players).length === 0) {
-                    const waitingEl = document.getElementById('waiting-players-list');
-                    if (waitingEl && waitingEl.children.length === 0) {
-                        const note = document.createElement('p');
-                        note.style.cssText = 'color:rgba(255,255,255,0.5); font-size:0.85rem; width:100%; text-align:center;';
-                        note.textContent = '💡 Abre otra pestaña para unirte como alumno, o presiona el botón de abajo para agregar jugadores de prueba';
-                        waitingEl.parentElement.insertBefore(note, waitingEl.nextSibling);
-                        
-                        const demoBtn = document.createElement('button');
-                        demoBtn.className = 'btn btn-small';
-                        demoBtn.style.cssText = 'background:rgba(255,255,255,0.1); color:white; margin-top:10px;';
-                        demoBtn.textContent = '🎭 Agregar Jugadores de Prueba';
-                        demoBtn.onclick = () => { addDemoPlayers(); demoBtn.remove(); note.remove(); };
-                        waitingEl.parentElement.appendChild(demoBtn);
-                    }
-                }
-            }, 3000);
-        }
-
-        const origStartGame = startGame;
-        startGame = function() {
-            origStartGame();
-            scheduleDemoPlayers();
-        };
-
-        const origEndQuestion2 = endQuestion;
-        endQuestion = function() {
-            Object.keys(gameState.players).forEach(pid => {
-                if (gameState.players[pid].lastAnswer === undefined && pid.startsWith('demo_')) {
-                    const q = gameState.questions[gameState.currentQuestion];
-                    if (Math.random() < 0.6) {
-                        gameState.players[pid].lastAnswer = q.correct;
-                    } else {
-                        let wrong;
-                        do { wrong = Math.floor(Math.random() * 4); } while (wrong === q.correct);
-                        gameState.players[pid].lastAnswer = wrong;
-                    }
-                    gameState.players[pid].answerTime = Math.floor(Math.random() * 15) + 3;
-                    
-                    if (gameState.answerCounts) {
-                        gameState.answerCounts[gameState.players[pid].lastAnswer]++;
-                        const countEl = document.getElementById(`answer-count-${gameState.players[pid].lastAnswer}`);
-                        if (countEl) countEl.textContent = gameState.answerCounts[gameState.players[pid].lastAnswer];
-                    }
-                }
-            });
-            origEndQuestion2();
-        };
-
-        // Clean up old rooms
-        (function cleanup() {
-            const keys = Object.keys(localStorage).filter(k => k.startsWith('quizlive_room_'));
-            keys.forEach(k => {
-                try {
-                    const data = JSON.parse(localStorage.getItem(k));
-                    if (Date.now() - data.timestamp > 3600000) {
-                        localStorage.removeItem(k);
-                    }
-                } catch(e) {
-                    localStorage.removeItem(k);
-                }
-            });
-        })();
     </script>
 </body>
 </html>
