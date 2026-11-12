@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizLive - Juego de Preguntas</title>
+    <title>QuizLive - Enfermedades Inculpables</title>
     <link href="https://cdn.jsdelivr.net/npm/@fontsource/poppins@5.0.8/index.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,16 +25,16 @@
         @keyframes confettiFall { to { top: 110vh; transform: rotate(720deg); } }
 
         .logo {
-            font-size: 3rem; font-weight: 800;
+            font-size: 2.5rem; font-weight: 800;
             background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             margin-bottom: 10px; text-align: center;
         }
-        .subtitle { color: rgba(255,255,255,0.7); font-size: 1.1rem; margin-bottom: 30px; text-align: center; }
+        .subtitle { color: rgba(255,255,255,0.7); font-size: 1rem; margin-bottom: 30px; text-align: center; }
         .btn {
-            padding: 16px 40px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
+            padding: 14px 30px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
             cursor: pointer; transition: all 0.3s ease; font-family: 'Poppins', sans-serif;
-            text-transform: uppercase; letter-spacing: 1px; margin: 10px;
+            text-transform: uppercase; letter-spacing: 1px; margin: 8px;
         }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .btn:active { transform: translateY(0); }
@@ -66,8 +66,9 @@
         }
         .question-area { width: 100%; max-width: 900px; margin: 20px auto; }
         .question-text {
-            font-size: 1.6rem; font-weight: 700; text-align: center; margin-bottom: 30px;
-            padding: 30px; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px);
+            font-size: 1.4rem; font-weight: 700; text-align: center; margin-bottom: 30px;
+            padding: 25px; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px);
+            line-height: 1.4;
         }
         .timer-display {
             width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.1);
@@ -77,8 +78,8 @@
         .timer-display.warning { border-color: #ff6b6b; color: #ff6b6b; animation: pulse 0.5s infinite; }
         .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 800px; margin: 0 auto; }
         .answer-card {
-            padding: 25px; border-radius: 16px; font-size: 1.1rem; font-weight: 600; text-align: center;
-            position: relative; overflow: hidden; min-height: 90px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+            padding: 20px; border-radius: 16px; font-size: 1rem; font-weight: 600; text-align: center;
+            position: relative; overflow: hidden; min-height: 80px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;
         }
         .answer-card.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
         .answer-card.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
@@ -91,8 +92,8 @@
         .player-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; }
         .player-answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; margin: 20px auto; }
         .player-answer-btn {
-            padding: 20px 15px; border-radius: 16px; border: none; font-size: 1rem; font-weight: 700; color: white;
-            cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif; min-height: 80px;
+            padding: 18px 12px; border-radius: 16px; border: none; font-size: 0.95rem; font-weight: 700; color: white;
+            cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif; min-height: 70px;
             display: flex; align-items: center; justify-content: center; text-align: center;
         }
         .player-answer-btn.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
@@ -105,7 +106,7 @@
         .player-answer-btn.selected { box-shadow: 0 0 20px rgba(255,255,255,0.5); border: 3px solid white; }
 
         .leaderboard { width: 100%; max-width: 600px; margin: 20px auto; }
-        .leaderboard-title { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 20px; color: #ffd93d; }
+        .leaderboard-title { font-size: 1.8rem; font-weight: 800; text-align: center; margin-bottom: 20px; color: #ffd93d; }
         .leaderboard-item {
             display: flex; align-items: center; padding: 15px 20px; background: rgba(255,255,255,0.1);
             border-radius: 12px; margin-bottom: 10px; animation: slideIn 0.3s ease; backdrop-filter: blur(5px);
@@ -114,8 +115,8 @@
         .leaderboard-item:nth-child(2) { background: linear-gradient(135deg, rgba(192, 192, 192, 0.3), rgba(192, 192, 192, 0.1)); border: 2px solid rgba(192, 192, 192, 0.5); }
         .leaderboard-item:nth-child(3) { background: linear-gradient(135deg, rgba(205, 127, 50, 0.3), rgba(205, 127, 50, 0.1)); border: 2px solid rgba(205, 127, 50, 0.5); }
         .rank { font-size: 1.5rem; font-weight: 800; width: 50px; text-align: center; }
-        .player-name-lb { flex: 1; font-size: 1.1rem; font-weight: 600; margin-left: 15px; }
-        .player-score-lb { font-size: 1.3rem; font-weight: 800; color: #ffd93d; }
+        .player-name-lb { flex: 1; font-size: 1rem; font-weight: 600; margin-left: 15px; }
+        .player-score-lb { font-size: 1.2rem; font-weight: 800; color: #ffd93d; }
 
         .waiting-dots { display: flex; gap: 8px; margin: 20px; }
         .waiting-dots span { width: 12px; height: 12px; border-radius: 50%; background: #ffd93d; animation: bounceIn 0.6s ease infinite; }
@@ -129,7 +130,7 @@
         .result-feedback .text { font-size: 1.3rem; font-weight: 700; margin-top: 10px; }
         .result-feedback .points { font-size: 1.8rem; font-weight: 800; color: #ffd93d; margin-top: 10px; }
         .result-feedback .explanation {
-            font-size: 0.95rem; color: rgba(255,255,255,0.9); margin-top: 15px; padding: 15px;
+            font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-top: 15px; padding: 15px;
             background: rgba(255,255,255,0.1); border-radius: 12px; line-height: 1.5;
         }
 
@@ -138,19 +139,17 @@
         .question-counter { text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 10px; }
 
         @media (max-width: 768px) {
-            .logo { font-size: 2rem; } .room-code-value { font-size: 2.5rem; }
-            .question-text { font-size: 1.2rem; padding: 20px; }
+            .logo { font-size: 1.8rem; } .room-code-value { font-size: 2.5rem; }
+            .question-text { font-size: 1.1rem; padding: 20px; }
             .answers-grid, .player-answer-grid { grid-template-columns: 1fr; }
-            .answer-card, .player-answer-btn { min-height: 60px; padding: 15px; font-size: 1rem; }
-            .btn { padding: 12px 25px; font-size: 1rem; }
+            .answer-card, .player-answer-btn { min-height: 60px; padding: 15px; font-size: 0.95rem; }
+            .btn { padding: 12px 25px; font-size: 0.95rem; }
         }
 
         .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
         .confetti { position: absolute; width: 10px; height: 10px; top: -10px; animation: confettiFall 3s ease-in forwards; }
         .join-info { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-top: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .join-info p { color: rgba(255,255,255,0.7); margin: 5px 0; }
-        .join-info .url { color: #4d96ff; font-weight: 600; font-size: 1.1rem; }
-
         .editor-container { width: 100%; max-width: 700px; margin: 0 auto; }
         .question-editor { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.15); }
         .question-editor input, .question-editor textarea {
@@ -182,13 +181,21 @@
         .qr-canvas { margin: 15px auto; border-radius: 12px; background: white; padding: 10px; }
         .firebase-status { padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin: 10px; }
         .firebase-status.connected { background: rgba(107, 203, 119, 0.2); color: #6bcb77; border: 1px solid #6bcb77; }
+        .topic-selector { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px; }
+        .topic-btn {
+            padding: 15px 25px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1); color: white; font-family: 'Poppins', sans-serif;
+            font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.95rem;
+        }
+        .topic-btn:hover { background: rgba(255,255,255,0.2); }
+        .topic-btn.selected { border-color: #6bcb77; background: rgba(107, 203, 119, 0.3); }
     </style>
 </head>
 <body>
 
     <div id="screen-main" class="screen active">
         <div class="logo">🎮 QuizLive</div>
-        <p class="subtitle">Juego interactivo de preguntas y respuestas en tiempo real</p>
+        <p class="subtitle">Enfermedades Inculpables - Derecho Laboral Argentina</p>
         <div class="firebase-status connected" id="firebase-status">✅ Conectado a Firebase</div>
         <button class="btn btn-primary" onclick="showScreen('screen-host-setup')">🖥️ Crear Partida (Profesor)</button>
         <button class="btn btn-secondary" onclick="showScreen('screen-join')">📱 Unirse como Alumno</button>
@@ -197,27 +204,27 @@
     <div id="screen-host-setup" class="screen">
         <div class="logo">🖥️ Configurar Partida</div>
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchEditorTab('preset')">Preguntas Prediseñadas</button>
-            <button class="nav-tab" onclick="switchEditorTab('custom')">Mis Preguntas Guardadas</button>
+            <button class="nav-tab active" onclick="switchEditorTab('preset')">Temas Predefinidos</button>
+            <button class="nav-tab" onclick="switchEditorTab('custom')">Mis Preguntas</button>
         </div>
         
         <div id="editor-preset">
-            <p class="subtitle">Selecciona un tema para jugar con preguntas prediseñadas</p>
-            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px;">
-                <button class="btn btn-primary btn-small" onclick="loadPreset('ciencia')">🔬 Ciencia</button>
-                <button class="btn btn-primary btn-small" onclick="loadPreset('historia')">📜 Historia</button>
-                <button class="btn btn-primary btn-small" onclick="loadPreset('mates')">🔢 Matemáticas</button>
-                <button class="btn btn-primary btn-small" onclick="loadPreset('geografia')">🌍 Geografía</button>
-                <button class="btn btn-primary btn-small" onclick="loadPreset('cultura')">🎭 Cultura General</button>
+            <p class="subtitle">Selecciona un tema (5 preguntas cada uno)</p>
+            <div class="topic-selector">
+                <button class="topic-btn" onclick="loadTopic('tema1')">📋 Licencia y Plazos</button>
+                <button class="topic-btn" onclick="loadTopic('tema2')">📝 Avisos y Certificados</button>
+                <button class="topic-btn" onclick="loadTopic('tema3')">🏥 Reserva e Incapacidad</button>
+                <button class="topic-btn" onclick="loadTopic('tema4')">💰 Indemnizaciones</button>
+                <button class="topic-btn" onclick="loadTopic('todas')">🎲 Todas (20 preguntas)</button>
             </div>
         </div>
 
         <div id="editor-custom" style="display:none;">
             <div class="editor-container">
                 <div style="text-align:center; margin-bottom:15px;">
-                    <button class="btn btn-primary btn-small" onclick="addQuestionEditor()">+ Agregar Nueva Pregunta</button>
-                    <button class="btn btn-small" style="background:rgba(107,203,119,0.2); color:#6bcb77; border:1px solid #6bcb77;" onclick="saveQuestionsToStorage()">💾 Guardar Mis Preguntas Permanentemente</button>
-                    <button class="btn btn-danger btn-small" onclick="clearSavedQuestions()">🗑️ Borrar Todo</button>
+                    <button class="btn btn-primary btn-small" onclick="addQuestionEditor()">+ Agregar Pregunta</button>
+                    <button class="btn btn-small" style="background:rgba(107,203,119,0.2); color:#6bcb77; border:1px solid #6bcb77;" onclick="saveQuestionsToStorage()">💾 Guardar</button>
+                    <button class="btn btn-danger btn-small" onclick="clearSavedQuestions()">🗑️ Borrar</button>
                 </div>
                 <div id="custom-questions-list"></div>
             </div>
@@ -256,7 +263,7 @@
                 <div class="question-counter" id="question-counter">Pregunta 1 de 5</div>
             </div>
             <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-            <div class="timer-display" id="timer-display">20</div>
+            <div class="timer-display" id="timer-display">30</div>
             <div class="question-area">
                 <div class="question-text" id="host-question-text">Pregunta</div>
                 <div class="answers-grid" id="host-answers-grid"></div>
@@ -309,8 +316,8 @@
         <div class="player-container">
             <div class="question-counter" id="player-question-counter">Pregunta 1 de 5</div>
             <div class="progress-bar"><div class="progress-bar-fill" id="player-progress-fill" style="width:0%"></div></div>
-            <div class="timer-display" id="player-timer">20</div>
-            <div class="question-text" id="player-question-text" style="font-size:1.2rem;">Pregunta</div>
+            <div class="timer-display" id="player-timer">30</div>
+            <div class="question-text" id="player-question-text" style="font-size:1.1rem;">Pregunta</div>
             <div class="player-answer-grid" id="player-answer-grid"></div>
         </div>
     </div>
@@ -368,12 +375,165 @@
 
         let gameState = {
             roomCode: '', host: false, playerId: '', playerName: '', players: {},
-            questions: [], currentQuestion: 0, timeLeft: 20, timerInterval: null, answered: false, scores: {}
+            questions: [], currentQuestion: 0, timeLeft: 30, timerInterval: null, answered: false, scores: {},
+            gameStarted: false
         };
 
         let roomRef = null, playersRef = null, answersRef = null, gameRef = null;
 
-        // --- PERSISTENCIA DE PREGUNTAS (LOCALSTORAGE) ---
+        // ==================== 20 PREGUNTAS ORGANIZADAS ====================
+        const allQuestions = {
+            tema1: [
+                {
+                    question: "¿Un trabajador lesionado en la vía pública por su propia negligencia (ej. cruzar distraído mirando el celular) pierde el derecho a la licencia paga por enfermedad inculpable (Art. 208 LCT)?",
+                    answers: ["Sí, la negligencia grave extingue la obligación patronal", "No, el régimen cubre imprudencia o negligencia; el único límite es el dolo", "Sí, salvo que el accidente ocurra durante la jornada", "No, pero la ley reduce automáticamente su remuneración al 50%"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! El régimen de enfermedades inculpables responde incluso ante culpa o culpa grave del trabajador (imprudencia o negligencia). El derecho a cobro únicamente cesa si se prueba dolo (provocación intencional de la lesión o fraude).",
+                    explanationWrong: "❌ La respuesta correcta es la B. La negligencia del trabajador no elimina el derecho a la licencia paga; solo el dolo (intención de provocar la lesión) excluye la cobertura."
+                },
+                {
+                    question: "Un empleado con 4 años y 11 meses de antigüedad cae enfermo por un tratamiento de 3 meses. Durante el transcurso de la licencia cumple los 5 años en la empresa. ¿Cuál es su tope máximo de licencia paga (sin cargas de familia)?",
+                    answers: ["3 meses, porque la antigüedad se congela al inicio", "6 meses, pues la remuneración se devenga día a día y al superar los 5 años se amplía el tope", "12 meses, por aplicación del principio in dubio pro operario", "Pierde la licencia paga de inmediato debiendo pasar a reserva de puesto"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Excelente! Como la licencia se devenga día a día, si el trabajador alcanza los 5 años de antigüedad durante su transcurso, el plazo máximo legal se amplía de 3 a 6 meses conforme al Art. 208 LCT.",
+                    explanationWrong: "❌ La respuesta es 6 meses. La antigüedad no se congela; si durante la licencia el trabajador cumple 5 años, se amplía el plazo automáticamente."
+                },
+                {
+                    question: "A los efectos de duplicar los plazos máximos de licencia paga del Artículo 208 LCT, ¿se considera el 'hijo por nacer' como carga de familia?",
+                    answers: ["No, la carga de familia requiere el nacimiento con vida", "Sí, la jurisprudencia considera el embarazo como carga de familia", "Solo si el empleador otorga conformidad previa por escrito", "Únicamente en contratos que superen los 10 años de antigüedad"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! La jurisprudencia mayoritaria aplica de forma amplia el concepto de familia (Art. 11 LCT), determinando que el embarazo (hijo por nacer) constituye carga de familia y duplica los plazos de licencia.",
+                    explanationWrong: "❌ La respuesta es SÍ. El embarazo se considera carga de familia desde la concepción, duplicando los plazos de licencia según jurisprudencia consolidada."
+                },
+                {
+                    question: "¿Qué ocurre con el plazo máximo de licencia paga si un trabajador sufre dos accidentes inculpables totalmente distintos e independientes con un mes de diferencia?",
+                    answers: ["Se agotan y acumulan dentro del mismo tope anual", "Se reinicia el cómputo del plazo máximo por tratarse de afecciones independientes", "Pasa automáticamente a la reserva de puesto sin goce de sueldo", "El segundo evento debe ser cubierto obligatoriamente por la ART"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Muy bien! El tope del Art. 208 LCT (3, 6 u 12 meses) se otorga por 'cada enfermedad o accidente'. Si ocurre un nuevo evento independiente, se reinicia un nuevo período máximo de licencia paga.",
+                    explanationWrong: "❌ Cada accidente o enfermedad independiente reinicia el plazo máximo. No se acumulan si son eventos distintos y no relacionados."
+                },
+                {
+                    question: "En el caso de recidivas de enfermedades crónicas, ¿cuándo se reinicia el plazo máximo de licencia remunerada según el Art. 208 LCT?",
+                    answers: ["A los 6 meses exactos desde el primer diagnóstico", "Transcurridos 2 años desde la manifestación de la patología", "Se reinicia automáticamente cada 1° de enero", "Nunca; las patologías crónicas solo otorgan un único plazo"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! Las recaídas o recidivas de una misma enfermedad crónica no se consideran una nueva enfermedad, salvo que se manifiesten transcurridos 2 años desde la manifestación previa (Art. 208 LCT).",
+                    explanationWrong: "❌ Las recidivas solo reinician el plazo si pasan 2 años desde la manifestación anterior. Si es antes, se considera la misma enfermedad."
+                }
+            ],
+            tema2: [
+                {
+                    question: "Bajo el Artículo 209 de la LCT, ¿en qué plazo debe el trabajador notificar su enfermedad o accidente e indicar el lugar exacto en que se encuentra?",
+                    answers: ["Dentro de las 48 horas posteriores al primer síntoma", "En el transcurso de la primera jornada de trabajo respecto de la cual esté imposibilitado de concurrir", "Al finalizar la semana laboral en la que se produjeron las inasistencias", "En el momento en que se emita el certificado médico definitivo"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! El Art. 209 exige dar aviso en la primera jornada de trabajo a la que no pueda asistir, informando el lugar de reposo para permitir el control médico patronal (Art. 210).",
+                    explanationWrong: "❌ El aviso debe darse en la PRIMERA jornada que el trabajador no pueda asistir, no después. Es fundamental para habilitar el control médico."
+                },
+                {
+                    question: "Tras la Reforma de Modernización Laboral (Ley 27.802 de 2026), ¿qué debe acreditar el trabajador si omitió dar aviso a tiempo para no perder el salario?",
+                    answers: ["Una declaración jurada ratificada ante escribano público", "Inequívocamente la imposibilidad de dar aviso dada la fuerza mayor o gravedad", "El consentimiento verbal previo del delegado del sector", "Nada; la omisión de aviso nunca genera la pérdida del derecho al cobro"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! La Ley 27.802 especificó que la pérdida del salario por falta de aviso solo se excepciona si la enfermedad/accidente y la imposibilidad de avisar resultan 'inequívocamente acreditadas'.",
+                    explanationWrong: "❌ El trabajador debe probar de forma inequívoca que no pudo avisar por fuerza mayor o gravedad. No es automático."
+                },
+                {
+                    question: "Si un trabajador sufre una enfermedad inculpable durante sus vacaciones anuales y notifica fehacientemente al empleador en tiempo y forma, ¿qué sucede?",
+                    answers: ["Las vacaciones continúan transcurriendo normalmente", "Se interrumpen las vacaciones, cobrando licencia por enfermedad y reservando los días no gozados", "Se extinguen definitivamente los días de vacaciones restantes", "El contrato se rescinde inmediatamente por imposibilidad objetiva"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! El aviso oportuno por enfermedad durante el receso interrumpe las vacaciones. El trabajador pasa a cobrar la licencia paga del Art. 208 y conserva los días de vacaciones pendientes (Art. 154 LCT).",
+                    explanationWrong: "❌ Las vacaciones se INTERRUMPEN (no se pierden). El trabajador cobra licencia por enfermedad y puede reprogramar sus vacaciones después."
+                },
+                {
+                    question: "Si existe discrepancia entre el médico del trabajador y el médico de control del empleador (Art. 210 LCT), ¿es obligatoria la junta médica?",
+                    answers: ["Sí, es un trámite administrativo obligatorio previo a cualquier reclamo", "No; la ley indica que 'se podrá recurrir', siendo un medio probatorio optativo", "Sí, y el dictamen resultante es vinculante e inimpugnable", "No; la opinión del médico de la empresa prevalece automáticamente"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Muy bien! La norma modificada por la Ley 27.802 establece que ante discrepancia 'se podrá recurrir' a junta médica. Es optativo y su resultado es una prueba más a evaluar por el juez.",
+                    explanationWrong: "❌ La junta médica NO es obligatoria. Es una opción probatoria que las partes pueden utilizar, pero el juez evalúa libremente todas las pruebas."
+                },
+                {
+                    question: "Conforme a la Reforma 2026 (Ley 27.802), ¿cuál de los siguientes requisitos NO forma parte de la validez del certificado médico?",
+                    answers: ["Firma digital emitida a través de plataformas electrónicas autorizadas", "Inclusión explícita del diagnóstico médico, tratamiento y días de reposo", "Homologación y visado previo obligatorio por la SRT y el Ministerio de Trabajo", "Emisión por profesional médico habilitado en el territorio nacional"],
+                    correct: 2,
+                    explanationCorrect: "✅ ¡Correcto! La Ley 27.802 exige diagnóstico, tratamiento, días de reposo, firma digital (Ley 27.553) y médico habilitado. NO exige visado ni homologación del Ministerio de Trabajo o SRT.",
+                    explanationWrong: "❌ El certificado médico NO requiere homologación ministerial. Solo necesita: diagnóstico, tratamiento, días de reposo, firma digital y médico habilitado."
+                }
+            ],
+            tema3: [
+                {
+                    question: "Bajo la Ley de Protección de Datos Personales (Ley 25.326), ¿está el trabajador obligado a detallar su diagnóstico médico en el telegrama de aviso laboral?",
+                    answers: ["Sí, la omisión del diagnóstico invalida jurídicamente la notificación", "No; el diagnóstico es un dato sensible resguardado por el secreto profesional", "Solo si la empresa cuenta con más de 100 empleados registrados", "Sí, salvo que se trate de afecciones respiratorias o virales menores"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! Los datos de salud son 'datos sensibles' (Ley 25.326). El trabajador no está obligado a revelar públicamente su diagnóstico en el telegrama; este debe ser verificado por el médico de control bajo secreto profesional.",
+                    explanationWrong: "❌ El trabajador NO debe revelar el diagnóstico en el aviso. Los datos de salud son sensibles y protegidos; solo el médico de control accede al diagnóstico bajo secreto profesional."
+                },
+                {
+                    question: "Durante el período de reserva de puesto de trabajo (Art. 211 LCT), ¿cuál es la situación del trabajador respecto de la remuneración y la obra social?",
+                    answers: ["Percibe el 50% de la remuneración habitual y mantiene la obra social", "No percibe salario, pero conserva la cobertura de la obra social", "Cobra el 100% del sueldo pero pierde de inmediato la afiliación a la obra social", "No percibe salario ni conserva ningún beneficio o cobertura médica"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! La reserva de puesto (1 año tras agotar la licencia paga) suspende el pago de salarios, pero mantiene vigente el contrato de trabajo y los beneficios de la obra social (Art. 211 LCT).",
+                    explanationWrong: "❌ En la reserva de puesto NO se cobra salario, pero SÍ se mantiene la obra social. El contrato sigue vigente aunque sin remuneración."
+                },
+                {
+                    question: "¿Cómo opera la extinción del contrato de trabajo una vez vencido el año de reserva de puesto (Art. 211 LCT)?",
+                    answers: ["Se extingue automáticamente de pleno derecho al cumplirse el día 365", "Requiere que alguna de las partes rescinda expresamente notificando a la otra; no genera indemnización", "Obliga al empleador a abonar la indemnización por despido incausado del Art. 245", "Exige dictamen previo firme expedido por la Comisión Médica Previsional"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! Vencido el año de reserva de puesto, el contrato subsiste hasta que cualquiera de las partes decida y notifique la voluntad de rescindirlo. Dicha extinción exime de responsabilidad indemnizatoria.",
+                    explanationWrong: "❌ El contrato NO se extingue automáticamente. Alguna de las partes debe notificar la rescisión, y no genera indemnización por ser una extinción sin causa imputable."
+                },
+                {
+                    question: "Si el trabajador queda con una incapacidad parcial definitiva y el empleador demuestra objetivamente que NO tiene tareas livianas compatibles, ¿qué indemnización corresponde?",
+                    answers: ["Ninguna, el vínculo se disuelve sin compensación por fuerza mayor", "La indemnización reducida del Artículo 247 LCT (50% de la indemnización por despido)", "La indemnización duplicada del Artículo 245 bis por despido discriminatorio", "La indemnización completa del Artículo 245 más dos años de salarios caídos"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! Si el empleador demuestra que no puede asignar tareas acordes por causas que no le son imputables, el contrato se extingue abonando la indemnización reducida del Art. 247 LCT (Art. 212 2° párrafo).",
+                    explanationWrong: "❌ Corresponde la indemnización REDUCIDA del Art. 247 (50% del despido), si el empleador prueba objetivamente que no tiene tareas livianas disponibles."
+                },
+                {
+                    question: "Si un empleador alega falsamente no tener tareas livianas para desvincular a un trabajador con incapacidad parcial, ¿qué consecuencia jurídica enfrenta?",
+                    answers: ["Queda eximido abonando únicamente la indemnización reducida del Art. 247", "Deberá pagar la indemnización plena del Art. 245 y eventualmente indemnización por despido discriminatorio", "Sufre únicamente un apercibimiento administrativo del Ministerio de Trabajo", "El contrato se convierte en un plazo fijo suspendido indefinidamente"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! Si se prueba en juicio que el empleador disponía de tareas livianas y mintió para no asignarlas, se aplica el 3° párrafo del Art. 212 LCT (indemnización del Art. 245) y se activa la tutela contra el despido discriminatorio.",
+                    explanationWrong: "❌ Si el empleador miente sobre no tener tareas livianas, debe pagar la indemnización COMPLETA del Art. 245 (despido incausado) y puede enfrentar claims por despido discriminatorio."
+                }
+            ],
+            tema4: [
+                {
+                    question: "¿Cuándo se presume jurídicamente configurada la incapacidad absoluta que da lugar al pago del Art. 212 (4° párrafo) LCT?",
+                    answers: ["Cuando la invalidez produce una disminución en la capacidad laborativa del 66% o más", "Solo cuando alcanza el 100% de incapacidad y requiere asistencia permanente", "Cuando el trabajador cumple los 65 años de edad en el transcurso de la licencia", "En cualquier enfermedad que requiera una inasistencia superior a los 90 días corridos"],
+                    correct: 0,
+                    explanationCorrect: "✅ ¡Correcto! La doctrina laboral y previsional (Art. 48 Ley 24.241) presume que la incapacidad es total/absoluta cuando la disminución laborativa sea igual o superior al 66%.",
+                    explanationWrong: "❌ La incapacidad absoluta se presume desde el 66% de disminución laborativa, no requiere el 100%. Es el estándar de la seguridad social argentina."
+                },
+                {
+                    question: "Si la enfermedad o accidente inculpable deriva en incapacidad absoluta para el trabajador, ¿qué indemnización debe abonar el empleador según el Art. 212 LCT?",
+                    answers: ["La indemnización reducida equivalente al Artículo 247 LCT", "Una indemnización de monto igual a la establecida en el Artículo 245 LCT", "Ninguna, la prestación económica recae de forma exclusiva sobre la ANSES", "Un subsidio mensual de salario mínimo vital y móvil durante 12 meses"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! El 4° párrafo del Art. 212 LCT dispone que ante incapacidad absoluta, el empleador debe abonar una indemnización equivalente a la del Art. 245 LCT. Este beneficio es acumulable con prestaciones de la seguridad social.",
+                    explanationWrong: "❌ Ante incapacidad absoluta (66% o más), el empleador debe pagar la indemnización COMPLETA del Art. 245 (como si fuera despido incausado), acumulable con beneficios de ANSES."
+                },
+                {
+                    question: "¿Qué dispone el Artículo 213 de la LCT si el empleador despide sin justa causa al trabajador durante la licencia paga por enfermedad inculpable?",
+                    answers: ["El despido es nulo de pleno derecho obligando a la reincorporación inmediata", "Debe abonar las indemnizaciones por despido incausado MÁS los salarios del tiempo que faltare para el alta o vencimiento", "Se aplica una reducción del 50% en las indemnizaciones por rescisión anticipada", "Solo se abona el preaviso y la integración del mes de despido"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! El Art. 213 LCT establece la sanción por despido en período de licencia paga: el empleador debe pagar las indemnizaciones por despido incausado completas MÁS los salarios caídos hasta el alta médica o el fin de la licencia.",
+                    explanationWrong: "❌ El despido durante licencia paga genera una sanción: indemnización por despido + TODOS los salarios que faltan hasta el alta o fin de la licencia. Es una protección reforzada."
+                },
+                {
+                    question: "Para liquidar los salarios de licencia por enfermedad de un trabajador con remuneraciones variables (ej. comisiones), ¿qué norma fija el Art. 208 LCT?",
+                    answers: ["Se toma únicamente la comisión obtenida en el último mes trabajado", "Se calcula un promedio de lo percibido en el último semestre (últimos 6 meses)", "Se abona exclusivamente el sueldo básico de convenio sin adicionales", "Se toma la comisión más alta de los últimos 2 años sin promediar"],
+                    correct: 1,
+                    explanationCorrect: "✅ ¡Correcto! El Art. 208 LCT establece que las remuneraciones variables se liquidarán según el promedio de lo percibido en el último semestre de prestación de servicios.",
+                    explanationWrong: "❌ Las remuneraciones variables (comisiones, horas extras, etc.) se promedian sobre los ÚLTIMOS 6 MESES trabajados, no solo el último mes."
+                },
+                {
+                    question: "Si un trabajador se encuentra cumpliendo una suspensión disciplinaria o económica y sobreviene una enfermedad inculpable, ¿qué ocurre con el cobro salarial?",
+                    answers: ["La enfermedad suspende la sanción/medida y el trabajador recupera el derecho a percibir remuneración", "Mantiene la suspensión sin goce de sueldo hasta que venza el plazo disciplinario", "El contrato se rescinde por injuria laboral concurrente", "Se reducen automáticamente a la mitad los plazos máximos de licencia paga"],
+                    correct: 0,
+                    explanationCorrect: "✅ ¡Correcto! El último párrafo del Art. 208 LCT establece que las suspensiones por causas económicas o disciplinarias no afectan el derecho a cobrar salarios por enfermedad, prevaleciendo el derecho a la remuneración por la licencia médica.",
+                    explanationWrong: "❌ La enfermedad inculpable PREVALECE sobre la suspensión. El trabajador deja de estar suspendido y pasa a cobrar la licencia por enfermedad."
+                }
+            ]
+        };
+
+        // --- PERSISTENCIA DE PREGUNTAS ---
         function saveQuestionsToStorage() {
             const questions = collectCustomQuestions();
             if (questions.length === 0) {
@@ -484,45 +644,6 @@
             return questions;
         }
 
-        // --- PREGUNTAS PREDETERMINADAS ---
-        const presetQuestions = {
-            ciencia: [
-                { question: "¿Cuál es el planeta más grande del sistema solar?", answers: ["Júpiter", "Saturno", "Neptuno", "Urano"], correct: 0, explanationCorrect: "¡Correcto! 🎉 Júpiter es el más grande, con un diámetro 11 veces mayor que el de la Tierra.", explanationWrong: "La respuesta correcta es Júpiter. Es un gigante gaseoso que podría contener más de 1,300 Tierras." },
-                { question: "¿Cuántos huesos tiene el cuerpo humano adulto?", answers: ["206", "300", "150", "180"], correct: 0, explanationCorrect: "¡Excelente! 👏 El adulto tiene 206 huesos. Los bebés nacen con ~270, pero se fusionan.", explanationWrong: "La respuesta correcta es 206. Los bebés tienen más, pero se fusionan al crecer." },
-                { question: "¿Qué gas respiramos principalmente?", answers: ["Oxígeno", "Nitrógeno", "CO2", "Hidrógeno"], correct: 1, explanationCorrect: "¡Correcto! 🌬️ El aire es 78% nitrógeno y solo 21% oxígeno.", explanationWrong: "La respuesta es Nitrógeno (78%). Aunque necesitamos oxígeno, el nitrógeno es más abundante." },
-                { question: "¿Cuál es el elemento más abundante en el universo?", answers: ["Oxígeno", "Carbono", "Helio", "Hidrógeno"], correct: 3, explanationCorrect: "¡Muy bien! ⭐ El hidrógeno representa ~75% de la materia visible del universo.", explanationWrong: "La respuesta es Hidrógeno. Es el combustible principal de las estrellas." },
-                { question: "¿Qué órgano produce la insulina?", answers: ["Hígado", "Páncreas", "Riñón", "Estómago"], correct: 1, explanationCorrect: "¡Correcto! 🎯 El páncreas produce insulina para regular la glucosa en sangre.", explanationWrong: "La respuesta es el Páncreas. Su fallo puede causar diabetes." }
-            ],
-            historia: [
-                { question: "¿En qué año llegó Colón a América?", answers: ["1492", "1500", "1480", "1510"], correct: 0, explanationCorrect: "¡Correcto! 🚢 El 12 de octubre de 1492.", explanationWrong: "La respuesta es 1492. Marcó el inicio del contacto entre Europa y América." },
-                { question: "¿Quién pintó la Mona Lisa?", answers: ["Miguel Ángel", "Leonardo da Vinci", "Rafael", "Botticelli"], correct: 1, explanationCorrect: "¡Excelente! 🎨 Leonardo da Vinci la pintó entre 1503 y 1519.", explanationWrong: "La respuesta es Leonardo da Vinci. Se exhibe en el Louvre, París." },
-                { question: "¿En qué año comenzó la Segunda Guerra Mundial?", answers: ["1935", "1939", "1941", "1945"], correct: 1, explanationCorrect: "¡Correcto! ⚔️ Comenzó el 1 de septiembre de 1939 con la invasión a Polonia.", explanationWrong: "La respuesta es 1939. Terminó en 1945." },
-                { question: "¿Cuál fue la primera civilización de Mesopotamia?", answers: ["Babilonia", "Asiria", "Sumeria", "Persa"], correct: 2, explanationCorrect: "¡Muy bien! 🏛️ Los sumerios, ~4500 a.C. Inventaron la escritura cuneiforme.", explanationWrong: "La respuesta es Sumeria. Fueron los pioneros de la civilización mesopotámica." },
-                { question: "¿Quién descubrió la penicilina?", answers: ["Pasteur", "Fleming", "Koch", "Jenner"], correct: 1, explanationCorrect: "¡Correcto! 💊 Alexander Fleming en 1928, por accidente.", explanationWrong: "La respuesta es Alexander Fleming. Revolucionó la medicina." }
-            ],
-            mates: [
-                { question: "¿Cuánto es 15 × 15?", answers: ["225", "215", "235", "205"], correct: 0, explanationCorrect: "¡Correcto! 🔢 15² = (10+5)² = 100 + 100 + 25 = 225.", explanationWrong: "La respuesta es 225." },
-                { question: "¿Cuál es la raíz cuadrada de 144?", answers: ["14", "11", "12", "13"], correct: 2, explanationCorrect: "¡Excelente! √144 = 12, porque 12 × 12 = 144.", explanationWrong: "La respuesta es 12." },
-                { question: "¿Cuántos grados tiene un triángulo?", answers: ["360°", "180°", "270°", "90°"], correct: 1, explanationCorrect: "¡Correcto! 📐 La suma de los ángulos internos siempre es 180°.", explanationWrong: "La respuesta es 180°, sin importar su forma o tamaño." },
-                { question: "¿Qué es π (pi) aproximadamente?", answers: ["3.14", "2.71", "1.61", "4.13"], correct: 0, explanationCorrect: "¡Muy bien! 🔵 π ≈ 3.14159...", explanationWrong: "La respuesta es 3.14. Es la relación entre circunferencia y diámetro." },
-                { question: "¿Cuánto es 2⁸?", answers: ["128", "256", "512", "64"], correct: 1, explanationCorrect: "¡Correcto! 💻 2⁸ = 256. Es la cantidad de valores de un byte.", explanationWrong: "La respuesta es 256." }
-            ],
-            geografia: [
-                { question: "¿Cuál es el río más largo del mundo?", answers: ["Nilo", "Amazonas", "Misisipi", "Yangtsé"], correct: 1, explanationCorrect: "¡Correcto! 🌊 El Amazonas (~7,062 km).", explanationWrong: "La respuesta es el Amazonas, aunque algunos estudios debaten con el Nilo." },
-                { question: "¿Cuál es el país más grande del mundo?", answers: ["China", "Canadá", "Rusia", "EE.UU."], correct: 2, explanationCorrect: "¡Excelente! 🇷🇺 Rusia, con 17.1 millones de km².", explanationWrong: "La respuesta es Rusia. Se extiende por 11 zonas horarias." },
-                { question: "¿En qué continente está Egipto?", answers: ["Asia", "África", "Europa", "Oceanía"], correct: 1, explanationCorrect: "¡Correcto! 🌍 En el noreste de África.", explanationWrong: "La respuesta es África (aunque el Sinaí está en Asia)." },
-                { question: "¿Cuál es la capital de Australia?", answers: ["Sídney", "Melbourne", "Canberra", "Brisbane"], correct: 2, explanationCorrect: "¡Muy bien! 🏛️ Canberra, elegida como compromiso en 1908.", explanationWrong: "La respuesta es Canberra, no Sídney." },
-                { question: "¿Cuál es el océano más grande?", answers: ["Atlántico", "Índico", "Ártico", "Pacífico"], correct: 3, explanationCorrect: "¡Correcto! 🌊 El Pacífico cubre más área que toda la tierra firme.", explanationWrong: "La respuesta es el Pacífico." }
-            ],
-            cultura: [
-                { question: "¿Cuántos jugadores tiene un equipo de fútbol?", answers: ["9", "10", "11", "12"], correct: 2, explanationCorrect: "¡Correcto! ⚽ 11 jugadores, incluyendo al portero.", explanationWrong: "La respuesta es 11." },
-                { question: "¿Cuántas cuerdas tiene una guitarra estándar?", answers: ["4", "5", "6", "7"], correct: 2, explanationCorrect: "¡Excelente! 🎸 6 cuerdas (Mi, La, Re, Sol, Si, Mi).", explanationWrong: "La respuesta es 6." },
-                { question: "¿Qué instrumento tocaba Beethoven?", answers: ["Violín", "Piano", "Flauta", "Guitarra"], correct: 1, explanationCorrect: "¡Correcto! 🎹 Era un virtuoso del piano.", explanationWrong: "La respuesta es el Piano." },
-                { question: "¿Cuántos colores tiene el arcoíris?", answers: ["5", "6", "7", "8"], correct: 2, explanationCorrect: "¡Muy bien! 🌈 7 colores, clasificados por Newton.", explanationWrong: "La respuesta es 7." },
-                { question: "¿Quién escribió Don Quijote?", answers: ["Lope de Vega", "Cervantes", "Quevedo", "Góngora"], correct: 1, explanationCorrect: "¡Correcto! 📚 Miguel de Cervantes, en 1605.", explanationWrong: "La respuesta es Cervantes." }
-            ]
-        };
-
         // --- PANTALLAS ---
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -540,11 +661,23 @@
             }
         }
 
-        function loadPreset(topic) {
-            gameState.questions = [...presetQuestions[topic]];
-            gameState.questions = shuffleArray(gameState.questions).slice(0, 5);
-            document.querySelectorAll('#editor-preset .btn').forEach(b => { b.style.opacity = '0.5'; b.style.border = '2px solid transparent'; });
-            event.target.style.opacity = '1'; event.target.style.border = '2px solid #6bcb77';
+        function loadTopic(topic) {
+            document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            if (topic === 'todas') {
+                gameState.questions = [
+                    ...allQuestions.tema1,
+                    ...allQuestions.tema2,
+                    ...allQuestions.tema3,
+                    ...allQuestions.tema4
+                ];
+            } else {
+                gameState.questions = [...allQuestions[topic]];
+            }
+            
+            gameState.questions = shuffleArray(gameState.questions);
+            alert(`✅ ${gameState.questions.length} preguntas cargadas y mezcladas aleatoriamente.`);
         }
 
         // --- LÓGICA DEL JUEGO ---
@@ -564,6 +697,7 @@
             gameState.currentQuestion = 0;
             gameState.players = {};
             gameState.scores = {};
+            gameState.gameStarted = false;
 
             try {
                 roomRef = db.ref('rooms/' + gameState.roomCode);
@@ -571,7 +705,7 @@
                 answersRef = db.ref('rooms/' + gameState.roomCode + '/answers');
                 gameRef = db.ref('rooms/' + gameState.roomCode + '/game');
 
-                await roomRef.set({ created: Date.now(), host: true, status: 'waiting', currentQuestion: 0, totalQuestions: gameState.questions.length });
+                await roomRef.set({ created: Date.now(), host: true, status: 'waiting', currentQuestion: -1, totalQuestions: gameState.questions.length });
 
                 playersRef.on('child_added', (snapshot) => {
                     gameState.players[snapshot.key] = snapshot.val();
@@ -581,22 +715,6 @@
                 answersRef.on('child_added', (snapshot) => {
                     const ans = snapshot.val();
                     handlePlayerAnswer(ans.playerId, ans.answerIndex, ans.timeLeft);
-                });
-
-                gameRef.on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    if (!data) return;
-                    if (data.status === 'playing' && !gameState.host) {
-                        if (gameState.currentQuestion !== data.currentQuestion || document.getElementById('screen-player-waiting').classList.contains('active')) {
-                            gameState.currentQuestion = data.currentQuestion;
-                            showQuestion();
-                        }
-                    } else if (data.status === 'results' && !gameState.host) {
-                        handlePlayerResult(data);
-                    } else if (data.status === 'finished' && !gameState.host) {
-                        showScreen('screen-player-final');
-                        document.getElementById('player-final-score').textContent = `${gameState.scores[gameState.playerId] || 0} pts`;
-                    }
                 });
 
                 showScreen('screen-host-waiting');
@@ -623,8 +741,13 @@
 
             try {
                 const roomSnapshot = await db.ref('rooms/' + code).once('value');
-                if (!roomSnapshot.exists() || roomSnapshot.val().status === 'finished') {
-                    errorEl.textContent = '❌ Código no encontrado o partida finalizada.';
+                if (!roomSnapshot.exists()) {
+                    errorEl.textContent = '❌ Código no encontrado.';
+                    errorEl.style.display = 'block'; return;
+                }
+                const roomData = roomSnapshot.val();
+                if (roomData.status === 'finished') {
+                    errorEl.textContent = '❌ Partida finalizada.';
                     errorEl.style.display = 'block'; return;
                 }
 
@@ -633,17 +756,21 @@
                 gameState.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
                 gameState.host = false;
                 gameState.answered = false;
+                gameState.gameStarted = false;
 
                 await db.ref('rooms/' + code + '/players/' + gameState.playerId).set({ name: name, joinedAt: Date.now(), score: 0 });
 
+                // Listener del juego para el alumno
                 const gameRefListener = db.ref('rooms/' + code + '/game');
                 gameRefListener.on('value', (snapshot) => {
                     const data = snapshot.val();
                     if (!data) return;
-                    // CORRECCIÓN: Si el juego ya está en marcha, mostrar la pregunta actual inmediatamente
+                    
+                    // CORRECCIÓN CLAVE: Si el juego está en 'playing', mostrar pregunta SIEMPRE
                     if (data.status === 'playing') {
-                        if (gameState.currentQuestion !== data.currentQuestion || document.getElementById('screen-player-waiting').classList.contains('active')) {
+                        if (!gameState.gameStarted || gameState.currentQuestion !== data.currentQuestion) {
                             gameState.currentQuestion = data.currentQuestion;
+                            gameState.gameStarted = true;
                             showQuestion();
                         }
                     } else if (data.status === 'results') {
@@ -657,6 +784,12 @@
                     }
                 });
 
+                // Si el juego ya está en marcha cuando se une
+                if (roomData.status === 'playing') {
+                    gameState.currentQuestion = roomData.currentQuestion;
+                    gameState.gameStarted = true;
+                }
+
                 errorEl.style.display = 'none';
                 showScreen('screen-player-waiting');
                 document.getElementById('player-welcome').textContent = `¡Hola, ${name}! 🎉`;
@@ -668,6 +801,7 @@
         async function startQuestions() {
             if (Object.keys(gameState.players).length === 0 && !confirm('⚠️ No hay jugadores. ¿Iniciar solo?')) return;
             gameState.currentQuestion = 0;
+            gameState.gameStarted = true;
             await gameRef.update({ status: 'playing', currentQuestion: 0, startTime: Date.now() });
             showQuestion();
         }
@@ -676,7 +810,7 @@
             const q = gameState.questions[gameState.currentQuestion];
             if (!q) { showFinalResults(); return; }
 
-            gameState.timeLeft = 20;
+            gameState.timeLeft = 30;
             gameState.answered = false;
 
             if (gameState.host) {
@@ -719,7 +853,7 @@
                     if (gameState.timeLeft <= 5) document.getElementById('timer-display').classList.add('warning');
                 } else {
                     document.getElementById('player-timer').textContent = gameState.timeLeft;
-                    if (gameState.timeLeft <= 3) document.getElementById('player-timer').classList.add('warning'); // En celular avisa antes
+                    if (gameState.timeLeft <= 5) document.getElementById('player-timer').classList.add('warning');
                 }
                 if (gameState.timeLeft <= 0) {
                     clearInterval(gameState.timerInterval);
@@ -774,7 +908,7 @@
                 try {
                     await gameRef.update({ status: 'results', results: results, correctAnswer: q.correct, explanationCorrect: q.explanationCorrect, explanationWrong: q.explanationWrong });
                 } catch(e) {}
-                setTimeout(() => showQuestionResults(), 2000);
+                setTimeout(() => showQuestionResults(), 2500);
             }
         }
 
@@ -783,7 +917,7 @@
             Object.keys(gameState.players).forEach(pid => {
                 const player = gameState.players[pid];
                 if (player.lastAnswer !== undefined && player.lastAnswer === q.correct) {
-                    const points = Math.max(100, Math.round(500 * (player.answerTime / 20)));
+                    const points = Math.max(100, Math.round(500 * (player.answerTime / 30)));
                     gameState.scores[pid] = (gameState.scores[pid] || 0) + points;
                     player.lastPoints = points; player.lastCorrect = true;
                     db.ref('rooms/' + gameState.roomCode + '/players/' + pid + '/score').set(gameState.scores[pid]);
@@ -844,7 +978,7 @@
 
         function resetGame() {
             clearInterval(gameState.timerInterval);
-            gameState.currentQuestion = 0; gameState.scores = {}; gameState.players = {}; gameState.roomCode = '';
+            gameState.currentQuestion = 0; gameState.scores = {}; gameState.players = {}; gameState.roomCode = ''; gameState.gameStarted = false;
             if (playersRef) playersRef.off(); if (answersRef) answersRef.off(); if (gameRef) gameRef.off();
             showScreen('screen-main');
         }
